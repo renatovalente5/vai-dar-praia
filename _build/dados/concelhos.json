@@ -79,6 +79,11 @@
 "di": "Ilha da Madeira (Madeira)",
 "dico": "3108"
 },
+"32.6537,-17.0029": {
+"co": "Câmara de Lobos",
+"di": "Ilha da Madeira (Madeira)",
+"dico": "3102"
+},
 "32.6551,-17.0232": {
 "co": "Ribeira Brava",
 "di": "Ilha da Madeira (Madeira)",
@@ -98,6 +103,11 @@
 "co": "Santa Cruz",
 "di": "Ilha da Madeira (Madeira)",
 "dico": "3108"
+},
+"32.6793,-17.0868": {
+"co": "Ponta do Sol",
+"di": "Ilha da Madeira (Madeira)",
+"dico": "3105"
 },
 "32.6795,-17.1053": {
 "co": "Ponta do Sol",
@@ -234,6 +244,11 @@
 "di": "Ilha da Madeira (Madeira)",
 "dico": "3106"
 },
+"32.8278,-16.9846": {
+"co": "São Vicente",
+"di": "Ilha da Madeira (Madeira)",
+"dico": "3110"
+},
 "32.8293,-16.8971": {
 "co": "Santana",
 "di": "Ilha da Madeira (Madeira)",
@@ -243,6 +258,11 @@
 "co": "Santana",
 "di": "Ilha da Madeira (Madeira)",
 "dico": "3109"
+},
+"32.8684,-17.1707": {
+"co": "Porto Moniz",
+"di": "Ilha da Madeira (Madeira)",
+"dico": "3106"
 },
 "33.0246,-16.3796": {
 "co": "Porto Santo",
@@ -314,6 +334,16 @@
 "di": "Ilha de Porto Santo (Madeira)",
 "dico": "3201"
 },
+"36.9391,-25.0141": {
+"co": "Vila do Porto",
+"di": "Ilha de Santa Maria (Açores)",
+"dico": "4101"
+},
+"36.9510,-25.0980": {
+"co": "Vila do Porto",
+"di": "Ilha de Santa Maria (Açores)",
+"dico": "4101"
+},
 "36.9629,-7.8792": {
 "co": "Faro",
 "di": "Faro",
@@ -334,6 +364,11 @@
 "di": "Faro",
 "dico": "0805"
 },
+"36.9880,-25.0541": {
+"co": "Vila do Porto",
+"di": "Ilha de Santa Maria (Açores)",
+"dico": "4101"
+},
 "36.9949,-7.8244": {
 "co": "Faro",
 "di": "Faro",
@@ -348,6 +383,11 @@
 "co": "Faro",
 "di": "Faro",
 "dico": "0805"
+},
+"37.0050,-25.1573": {
+"co": "Vila do Porto",
+"di": "Ilha de Santa Maria (Açores)",
+"dico": "4101"
 },
 "37.0050,-8.9387": {
 "co": "Vila do Bispo",
@@ -1009,6 +1049,11 @@
 "di": "Faro",
 "dico": "0806"
 },
+"37.1018,-7.2921": {
+"co": "Vila Real de Santo António",
+"di": "Faro",
+"dico": "0816"
+},
 "37.1018,-8.3703": {
 "co": "Lagoa",
 "di": "Faro",
@@ -1319,6 +1364,11 @@
 "di": "Faro",
 "dico": "0803"
 },
+"37.3301,-7.4922": {
+"co": "Castro Marim",
+"di": "Faro",
+"dico": "0804"
+},
 "37.3345,-8.8602": {
 "co": "Aljezur",
 "di": "Faro",
@@ -1400,6 +1450,11 @@
 "dico": "0211"
 },
 "37.5165,-8.7902": {
+"co": "Odemira",
+"di": "Beja",
+"dico": "0211"
+},
+"37.5168,-8.4438": {
 "co": "Odemira",
 "di": "Beja",
 "dico": "0211"
@@ -1614,7 +1669,22 @@
 "di": "Ilha de São Miguel (Açores)",
 "dico": "4204"
 },
+"37.7393,-25.1965": {
+"co": "Povoação",
+"di": "Ilha de São Miguel (Açores)",
+"dico": "4204"
+},
 "37.7395,-25.6613": {
+"co": "Ponta Delgada",
+"di": "Ilha de São Miguel (Açores)",
+"dico": "4203"
+},
+"37.7417,-25.5741": {
+"co": "Lagoa",
+"di": "Ilha de São Miguel (Açores)",
+"dico": "4201"
+},
+"37.7445,-25.6406": {
 "co": "Ponta Delgada",
 "di": "Ilha de São Miguel (Açores)",
 "dico": "4203"
@@ -1729,6 +1799,11 @@
 "di": "Ilha de São Miguel (Açores)",
 "dico": "4205"
 },
+"37.8244,-25.6063": {
+"co": "Ribeira Grande",
+"di": "Ilha de São Miguel (Açores)",
+"dico": "4205"
+},
 "37.8268,-25.5227": {
 "co": "Ribeira Grande",
 "di": "Ilha de São Miguel (Açores)",
@@ -1779,6 +1854,11 @@
 "di": "Ilha de São Miguel (Açores)",
 "dico": "4203"
 },
+"37.8456,-25.1470": {
+"co": "Nordeste",
+"di": "Ilha de São Miguel (Açores)",
+"dico": "4202"
+},
 "37.8462,-8.7931": {
 "co": "Sines",
 "di": "Setúbal",
@@ -1828,6 +1908,11 @@
 "co": "Sines",
 "di": "Setúbal",
 "dico": "1513"
+},
+"37.8583,-25.8524": {
+"co": "Ponta Delgada",
+"di": "Ilha de São Miguel (Açores)",
+"dico": "4203"
 },
 "37.8586,-25.2736": {
 "co": "Nordeste",
@@ -2039,12 +2124,42 @@
 "di": "Ilha do Pico (Açores)",
 "dico": "4601"
 },
+"38.3940,-28.2047": {
+"co": "Lajes do Pico",
+"di": "Ilha do Pico (Açores)",
+"dico": "4601"
+},
+"38.4000,-28.0827": {
+"co": "Lajes do Pico",
+"di": "Ilha do Pico (Açores)",
+"dico": "4601"
+},
+"38.4044,-28.1869": {
+"co": "Lajes do Pico",
+"di": "Ilha do Pico (Açores)",
+"dico": "4601"
+},
 "38.4074,-7.3528": {
 "co": "Mourão",
 "di": "Évora",
 "dico": "0708"
 },
+"38.4081,-28.1606": {
+"co": "Lajes do Pico",
+"di": "Ilha do Pico (Açores)",
+"dico": "4601"
+},
+"38.4108,-28.0366": {
+"co": "Lajes do Pico",
+"di": "Ilha do Pico (Açores)",
+"dico": "4601"
+},
 "38.4124,-28.2890": {
+"co": "Lajes do Pico",
+"di": "Ilha do Pico (Açores)",
+"dico": "4601"
+},
+"38.4142,-28.3471": {
 "co": "Lajes do Pico",
 "di": "Ilha do Pico (Açores)",
 "dico": "4601"
@@ -2074,6 +2189,11 @@
 "di": "Setúbal",
 "dico": "1511"
 },
+"38.4268,-28.4210": {
+"co": "Madalena",
+"di": "Ilha do Pico (Açores)",
+"dico": "4602"
+},
 "38.4271,-9.1735": {
 "co": "Sesimbra",
 "di": "Setúbal",
@@ -2093,6 +2213,11 @@
 "co": "Sesimbra",
 "di": "Setúbal",
 "dico": "1511"
+},
+"38.4308,-28.4610": {
+"co": "Madalena",
+"di": "Ilha do Pico (Açores)",
+"dico": "4602"
 },
 "38.4327,-9.1291": {
 "co": "Sesimbra",
@@ -2199,6 +2324,11 @@
 "di": "Setúbal",
 "dico": "1512"
 },
+"38.4775,-28.2048": {
+"co": "São Roque do Pico",
+"di": "Ilha do Pico (Açores)",
+"dico": "4603"
+},
 "38.4780,-9.1870": {
 "co": "Sesimbra",
 "di": "Setúbal",
@@ -2268,6 +2398,11 @@
 "co": "Sesimbra",
 "di": "Setúbal",
 "dico": "1511"
+},
+"38.4957,-28.5393": {
+"co": "Madalena",
+"di": "Ilha do Pico (Açores)",
+"dico": "4602"
 },
 "38.5034,-8.8447": {
 "co": "Setúbal",
@@ -2349,10 +2484,20 @@
 "di": "Ilha do Faial (Açores)",
 "dico": "4701"
 },
+"38.5243,-28.3167": {
+"co": "São Roque do Pico",
+"di": "Ilha do Pico (Açores)",
+"dico": "4603"
+},
 "38.5248,-28.6268": {
 "co": "Horta",
 "di": "Ilha do Faial (Açores)",
 "dico": "4701"
+},
+"38.5340,-28.5345": {
+"co": "Madalena",
+"di": "Ilha do Pico (Açores)",
+"dico": "4602"
 },
 "38.5355,-28.3356": {
 "co": "São Roque do Pico",
@@ -2504,6 +2649,11 @@
 "di": "Setúbal",
 "dico": "1503"
 },
+"38.6073,-28.0343": {
+"co": "Calheta de S. Jorge",
+"di": "Ilha de São Jorge (Açores)",
+"dico": "4501"
+},
 "38.6100,-9.2144": {
 "co": "Almada",
 "di": "Setúbal",
@@ -2609,6 +2759,11 @@
 "di": "Setúbal",
 "dico": "1510"
 },
+"38.6467,-27.1128": {
+"co": "Angra do Heroísmo",
+"di": "Ilha Terceira (Açores)",
+"dico": "4301"
+},
 "38.6473,-9.0973": {
 "co": "Seixal",
 "di": "Setúbal",
@@ -2624,6 +2779,11 @@
 "di": "Ilha Terceira (Açores)",
 "dico": "4301"
 },
+"38.6483,-27.0976": {
+"co": "Angra do Heroísmo",
+"di": "Ilha Terceira (Açores)",
+"dico": "4301"
+},
 "38.6501,-9.2456": {
 "co": "Almada",
 "di": "Setúbal",
@@ -2635,6 +2795,11 @@
 "dico": "1510"
 },
 "38.6537,-27.2200": {
+"co": "Angra do Heroísmo",
+"di": "Ilha Terceira (Açores)",
+"dico": "4301"
+},
+"38.6558,-27.2818": {
 "co": "Angra do Heroísmo",
 "di": "Ilha Terceira (Açores)",
 "dico": "4301"
@@ -2684,6 +2849,11 @@
 "di": "Setúbal",
 "dico": "1506"
 },
+"38.6711,-27.0750": {
+"co": "Angra do Heroísmo",
+"di": "Ilha Terceira (Açores)",
+"dico": "4301"
+},
 "38.6714,-9.2430": {
 "co": "Almada",
 "di": "Setúbal",
@@ -2723,6 +2893,11 @@
 "co": "Almada",
 "di": "Setúbal",
 "dico": "1503"
+},
+"38.6781,-28.2081": {
+"co": "Velas",
+"di": "Ilha de São Jorge (Açores)",
+"dico": "4502"
 },
 "38.6793,-9.3361": {
 "co": "Cascais",
@@ -3104,6 +3279,11 @@
 "di": "Lisboa",
 "dico": "1109"
 },
+"39.0126,-27.9591": {
+"co": "Santa Cruz da Graciosa",
+"di": "Ilha da Graciosa (Açores)",
+"dico": "4401"
+},
 "39.0328,-9.4184": {
 "co": "Mafra",
 "di": "Lisboa",
@@ -3114,10 +3294,25 @@
 "di": "Santarém",
 "dico": "1415"
 },
+"39.0511,-27.9709": {
+"co": "Santa Cruz da Graciosa",
+"di": "Ilha da Graciosa (Açores)",
+"dico": "4401"
+},
+"39.0567,-7.9134": {
+"co": "Avis",
+"di": "Portalegre",
+"dico": "1203"
+},
 "39.0815,-8.7581": {
 "co": "Cartaxo",
 "di": "Santarém",
 "dico": "1406"
+},
+"39.0877,-28.0086": {
+"co": "Santa Cruz da Graciosa",
+"di": "Ilha da Graciosa (Açores)",
+"dico": "4401"
 },
 "39.0894,-8.1615": {
 "co": "Ponte de Sor",
@@ -3138,6 +3333,11 @@
 "co": "Torres Vedras",
 "di": "Lisboa",
 "dico": "1113"
+},
+"39.1209,-8.1254": {
+"co": "Ponte de Sor",
+"di": "Portalegre",
+"dico": "1213"
 },
 "39.1274,-9.3884": {
 "co": "Torres Vedras",
@@ -3263,6 +3463,11 @@
 "co": "Alpiarça",
 "di": "Santarém",
 "dico": "1404"
+},
+"39.3113,-9.3469": {
+"co": "Peniche",
+"di": "Leiria",
+"dico": "1014"
 },
 "39.3379,-9.3636": {
 "co": "Peniche",
@@ -3469,6 +3674,11 @@
 "di": "Portalegre",
 "dico": "1209"
 },
+"39.4917,-8.5762": {
+"co": "Torres Novas",
+"di": "Santarém",
+"dico": "1419"
+},
 "39.5034,-9.1498": {
 "co": "Caldas da Rainha",
 "di": "Leiria",
@@ -3654,7 +3864,17 @@
 "di": "Leiria",
 "dico": "1001"
 },
+"39.7300,-7.7602": {
+"co": "Vila Velha de Ródão",
+"di": "Castelo Branco",
+"dico": "0511"
+},
 "39.7304,-8.2317": {
+"co": "Sertã",
+"di": "Castelo Branco",
+"dico": "0509"
+},
+"39.7334,-8.0904": {
 "co": "Sertã",
 "di": "Castelo Branco",
 "dico": "0509"
@@ -3703,6 +3923,16 @@
 "co": "Proença-a-nova",
 "di": "Castelo Branco",
 "dico": "0508"
+},
+"39.8036,-8.0088": {
+"co": "Sertã",
+"di": "Castelo Branco",
+"dico": "0509"
+},
+"39.8073,-8.0963": {
+"co": "Sertã",
+"di": "Castelo Branco",
+"dico": "0509"
 },
 "39.8097,-7.7535": {
 "co": "Proença-a-nova",
@@ -3764,6 +3994,11 @@
 "di": "Leiria",
 "dico": "1008"
 },
+"39.9188,-8.2842": {
+"co": "Figueiró dos Vinhos",
+"di": "Leiria",
+"dico": "1008"
+},
 "39.9211,-7.8915": {
 "co": "Oleiros",
 "di": "Castelo Branco",
@@ -3784,10 +4019,20 @@
 "di": "Leiria",
 "dico": "1009"
 },
+"39.9359,-8.1864": {
+"co": "Pedrógão Grande",
+"di": "Leiria",
+"dico": "1013"
+},
 "39.9776,-7.9609": {
 "co": "Oleiros",
 "di": "Castelo Branco",
 "dico": "0506"
+},
+"39.9856,-8.1217": {
+"co": "Pedrógão Grande",
+"di": "Leiria",
+"dico": "1013"
 },
 "39.9992,-8.2662": {
 "co": "Figueiró dos Vinhos",
@@ -3799,6 +4044,11 @@
 "di": "Leiria",
 "dico": "1015"
 },
+"40.0076,-7.6612": {
+"co": "Castelo Branco",
+"di": "Castelo Branco",
+"dico": "0502"
+},
 "40.0131,-7.8469": {
 "co": "Oleiros",
 "di": "Castelo Branco",
@@ -3808,6 +4058,16 @@
 "co": "Góis",
 "di": "Coimbra",
 "dico": "0606"
+},
+"40.0170,-8.1009": {
+"co": "Góis",
+"di": "Coimbra",
+"dico": "0606"
+},
+"40.0245,-8.1895": {
+"co": "Castanheira de Pêra",
+"di": "Leiria",
+"dico": "1007"
 },
 "40.0261,-8.3047": {
 "co": "Penela",
@@ -3844,6 +4104,11 @@
 "di": "Coimbra",
 "dico": "0612"
 },
+"40.0519,-8.0241": {
+"co": "Pampilhosa da Serra",
+"di": "Coimbra",
+"dico": "0612"
+},
 "40.0550,-8.6098": {
 "co": "Soure",
 "di": "Coimbra",
@@ -3858,6 +4123,16 @@
 "co": "Fundão",
 "di": "Castelo Branco",
 "dico": "0504"
+},
+"40.0773,-7.4901": {
+"co": "Fundão",
+"di": "Castelo Branco",
+"dico": "0504"
+},
+"40.0904,-7.8522": {
+"co": "Pampilhosa da Serra",
+"di": "Coimbra",
+"dico": "0612"
 },
 "40.0922,-8.8756": {
 "co": "Figueira da Foz",
@@ -3904,12 +4179,22 @@
 "di": "Coimbra",
 "dico": "0605"
 },
+"40.1395,-7.9983": {
+"co": "Góis",
+"di": "Coimbra",
+"dico": "0606"
+},
 "40.1402,-8.1488": {
 "co": "Góis",
 "di": "Coimbra",
 "dico": "0606"
 },
 "40.1403,-8.0725": {
+"co": "Góis",
+"di": "Coimbra",
+"dico": "0606"
+},
+"40.1418,-8.0661": {
 "co": "Góis",
 "di": "Coimbra",
 "dico": "0606"
@@ -3934,6 +4219,11 @@
 "di": "Coimbra",
 "dico": "0606"
 },
+"40.1506,-7.9115": {
+"co": "Pampilhosa da Serra",
+"di": "Coimbra",
+"dico": "0612"
+},
 "40.1512,-7.6852": {
 "co": "Covilhã",
 "di": "Castelo Branco",
@@ -3953,6 +4243,11 @@
 "co": "Pampilhosa da Serra",
 "di": "Coimbra",
 "dico": "0612"
+},
+"40.1539,-8.1124": {
+"co": "Góis",
+"di": "Coimbra",
+"dico": "0606"
 },
 "40.1540,-8.2414": {
 "co": "Lousã",
@@ -3974,6 +4269,11 @@
 "di": "Coimbra",
 "dico": "0612"
 },
+"40.1674,-8.8868": {
+"co": "Figueira da Foz",
+"di": "Coimbra",
+"dico": "0605"
+},
 "40.1695,-7.9367": {
 "co": "Pampilhosa da Serra",
 "di": "Coimbra",
@@ -3984,10 +4284,20 @@
 "di": "Coimbra",
 "dico": "0609"
 },
+"40.1751,-8.8967": {
+"co": "Figueira da Foz",
+"di": "Coimbra",
+"dico": "0605"
+},
 "40.1799,-8.4181": {
 "co": "Coimbra",
 "di": "Coimbra",
 "dico": "0603"
+},
+"40.1849,-8.1500": {
+"co": "Góis",
+"di": "Coimbra",
+"dico": "0606"
 },
 "40.1892,-8.5901": {
 "co": "Montemor-o-velho",
@@ -4024,6 +4334,11 @@
 "di": "Coimbra",
 "dico": "0605"
 },
+"40.2219,-8.0149": {
+"co": "Arganil",
+"di": "Coimbra",
+"dico": "0601"
+},
 "40.2253,-7.8589": {
 "co": "Arganil",
 "di": "Coimbra",
@@ -4039,7 +4354,22 @@
 "di": "Castelo Branco",
 "dico": "0507"
 },
+"40.2291,-7.9453": {
+"co": "Arganil",
+"di": "Coimbra",
+"dico": "0601"
+},
 "40.2295,-7.8262": {
+"co": "Arganil",
+"di": "Coimbra",
+"dico": "0601"
+},
+"40.2392,-8.0680": {
+"co": "Arganil",
+"di": "Coimbra",
+"dico": "0601"
+},
+"40.2470,-7.8129": {
 "co": "Arganil",
 "di": "Coimbra",
 "dico": "0601"
@@ -4048,6 +4378,26 @@
 "co": "Arganil",
 "di": "Coimbra",
 "dico": "0601"
+},
+"40.2491,-8.0370": {
+"co": "Tábua",
+"di": "Coimbra",
+"dico": "0616"
+},
+"40.2494,-8.0359": {
+"co": "Arganil",
+"di": "Coimbra",
+"dico": "0601"
+},
+"40.2540,-8.2036": {
+"co": "Vila Nova de Poiares",
+"di": "Coimbra",
+"dico": "0617"
+},
+"40.2570,-7.6232": {
+"co": "Covilhã",
+"di": "Castelo Branco",
+"dico": "0503"
 },
 "40.2580,-7.5812": {
 "co": "Covilhã",
@@ -4063,6 +4413,11 @@
 "co": "Penacova",
 "di": "Coimbra",
 "dico": "0613"
+},
+"40.2680,-7.9963": {
+"co": "Arganil",
+"di": "Coimbra",
+"dico": "0601"
 },
 "40.2687,-7.8969": {
 "co": "Arganil",
@@ -4114,6 +4469,11 @@
 "di": "Coimbra",
 "dico": "0613"
 },
+"40.2858,-7.9610": {
+"co": "Arganil",
+"di": "Coimbra",
+"dico": "0601"
+},
 "40.2864,-6.8904": {
 "co": "Sabugal",
 "di": "Guarda",
@@ -4123,6 +4483,11 @@
 "co": "Seia",
 "di": "Guarda",
 "dico": "0912"
+},
+"40.2907,-8.2124": {
+"co": "Penacova",
+"di": "Coimbra",
+"dico": "0613"
 },
 "40.2933,-7.7537": {
 "co": "Seia",
@@ -4164,6 +4529,11 @@
 "di": "Coimbra",
 "dico": "0602"
 },
+"40.3432,-8.1237": {
+"co": "Santa Comba Dão",
+"di": "Viseu",
+"dico": "1814"
+},
 "40.3470,-7.8077": {
 "co": "Oliveira do Hospital",
 "di": "Coimbra",
@@ -4173,6 +4543,21 @@
 "co": "Sabugal",
 "di": "Guarda",
 "dico": "0911"
+},
+"40.3485,-8.6961": {
+"co": "Cantanhede",
+"di": "Coimbra",
+"dico": "0602"
+},
+"40.3563,-7.7813": {
+"co": "Seia",
+"di": "Guarda",
+"dico": "0912"
+},
+"40.3570,-8.5377": {
+"co": "Cantanhede",
+"di": "Coimbra",
+"dico": "0602"
 },
 "40.3725,-7.5165": {
 "co": "Manteigas",
@@ -4188,6 +4573,11 @@
 "co": "Tábua",
 "di": "Coimbra",
 "dico": "0616"
+},
+"40.3786,-7.7361": {
+"co": "Seia",
+"di": "Guarda",
+"dico": "0912"
 },
 "40.3817,-6.9262": {
 "co": "Sabugal",
@@ -4208,6 +4598,16 @@
 "co": "Mira",
 "di": "Coimbra",
 "dico": "0608"
+},
+"40.3980,-7.5827": {
+"co": "Gouveia",
+"di": "Guarda",
+"dico": "0906"
+},
+"40.3991,-7.6866": {
+"co": "Seia",
+"di": "Guarda",
+"dico": "0912"
 },
 "40.4006,-7.6404": {
 "co": "Seia",
@@ -4249,6 +4649,11 @@
 "di": "Guarda",
 "dico": "0911"
 },
+"40.4858,-7.4149": {
+"co": "Guarda",
+"di": "Guarda",
+"dico": "0907"
+},
 "40.4889,-8.1344": {
 "co": "Tondela",
 "di": "Viseu",
@@ -4269,6 +4674,11 @@
 "di": "Coimbra",
 "dico": "0608"
 },
+"40.5187,-7.3314": {
+"co": "Guarda",
+"di": "Guarda",
+"dico": "0907"
+},
 "40.5261,-7.9673": {
 "co": "Tondela",
 "di": "Viseu",
@@ -4284,10 +4694,30 @@
 "di": "Viseu",
 "dico": "1821"
 },
+"40.5519,-8.7746": {
+"co": "Vagos",
+"di": "Aveiro",
+"dico": "0118"
+},
+"40.5587,-8.7713": {
+"co": "Vagos",
+"di": "Aveiro",
+"dico": "0118"
+},
 "40.5592,-8.2376": {
 "co": "Tondela",
 "di": "Viseu",
 "dico": "1821"
+},
+"40.5615,-8.7704": {
+"co": "Vagos",
+"di": "Aveiro",
+"dico": "0118"
+},
+"40.5649,-8.7696": {
+"co": "Vagos",
+"di": "Aveiro",
+"dico": "0118"
 },
 "40.5687,-8.3555": {
 "co": "Águeda",
@@ -4324,6 +4754,16 @@
 "di": "Aveiro",
 "dico": "0110"
 },
+"40.6083,-7.2998": {
+"co": "Guarda",
+"di": "Guarda",
+"dico": "0907"
+},
+"40.6121,-7.5187": {
+"co": "Fornos de Algodres",
+"di": "Guarda",
+"dico": "0905"
+},
 "40.6201,-8.7530": {
 "co": "Ílhavo",
 "di": "Aveiro",
@@ -4339,6 +4779,11 @@
 "di": "Aveiro",
 "dico": "0110"
 },
+"40.6405,-8.7277": {
+"co": "Ílhavo",
+"di": "Aveiro",
+"dico": "0110"
+},
 "40.6461,-8.6579": {
 "co": "Aveiro",
 "di": "Aveiro",
@@ -4349,10 +4794,20 @@
 "di": "Aveiro",
 "dico": "0117"
 },
+"40.6648,-7.6572": {
+"co": "Penalva do Castelo",
+"di": "Viseu",
+"dico": "1811"
+},
 "40.6763,-8.7461": {
 "co": "Aveiro",
 "di": "Aveiro",
 "dico": "0105"
+},
+"40.7076,-8.3604": {
+"co": "Sever do Vouga",
+"di": "Aveiro",
+"dico": "0117"
 },
 "40.7296,-8.6501": {
 "co": "Murtosa",
@@ -4404,6 +4859,11 @@
 "di": "Viseu",
 "dico": "1817"
 },
+"40.7864,-8.2580": {
+"co": "Oliveira de Frades",
+"di": "Viseu",
+"dico": "1810"
+},
 "40.7865,-7.0093": {
 "co": "Pinhel",
 "di": "Guarda",
@@ -4413,6 +4873,11 @@
 "co": "Vale de Cambra",
 "di": "Aveiro",
 "dico": "0119"
+},
+"40.8202,-8.0135": {
+"co": "São Pedro do Sul",
+"di": "Viseu",
+"dico": "1816"
 },
 "40.8288,-8.6906": {
 "co": "Ovar",
@@ -4443,6 +4908,11 @@
 "co": "Vale de Cambra",
 "di": "Aveiro",
 "dico": "0119"
+},
+"40.8626,-7.6816": {
+"co": "Moimenta da Beira",
+"di": "Viseu",
+"dico": "1807"
 },
 "40.8655,-8.2771": {
 "co": "Arouca",
@@ -4538,6 +5008,11 @@
 "co": "Castro Daire",
 "di": "Viseu",
 "dico": "1803"
+},
+"40.9639,-7.5437": {
+"co": "Moimenta da Beira",
+"di": "Viseu",
+"dico": "1807"
 },
 "40.9661,-8.6521": {
 "co": "Espinho",
@@ -5064,12 +5539,27 @@
 "di": "Porto",
 "dico": "1316"
 },
+"41.3102,-8.7406": {
+"co": "Vila do Conde",
+"di": "Porto",
+"dico": "1316"
+},
 "41.3182,-7.7229": {
 "co": "Vila Real",
 "di": "Vila Real",
 "dico": "1714"
 },
 "41.3301,-8.7391": {
+"co": "Vila do Conde",
+"di": "Porto",
+"dico": "1316"
+},
+"41.3409,-8.7507": {
+"co": "Vila do Conde",
+"di": "Porto",
+"dico": "1316"
+},
+"41.3424,-8.7532": {
 "co": "Vila do Conde",
 "di": "Porto",
 "dico": "1316"
@@ -5184,6 +5674,11 @@
 "di": "Vila Real",
 "dico": "1705"
 },
+"41.4164,-8.7878": {
+"co": "Póvoa de Varzim",
+"di": "Porto",
+"dico": "1313"
+},
 "41.4275,-7.9847": {
 "co": "Celorico de Basto",
 "di": "Braga",
@@ -5208,6 +5703,11 @@
 "co": "Póvoa de Varzim",
 "di": "Porto",
 "dico": "1313"
+},
+"41.4667,-8.5229": {
+"co": "Vila Nova de Famalicão",
+"di": "Braga",
+"dico": "0312"
 },
 "41.4701,-7.8446": {
 "co": "Ribeira de Pena",
@@ -5244,6 +5744,16 @@
 "di": "Braga",
 "dico": "0306"
 },
+"41.5049,-7.1969": {
+"co": "Mirandela",
+"di": "Bragança",
+"dico": "0407"
+},
+"41.5052,-8.1628": {
+"co": "Fafe",
+"di": "Braga",
+"dico": "0307"
+},
 "41.5162,-7.8899": {
 "co": "Cabeceiras de Basto",
 "di": "Braga",
@@ -5258,6 +5768,11 @@
 "co": "Barcelos",
 "di": "Braga",
 "dico": "0302"
+},
+"41.5333,-7.1842": {
+"co": "Mirandela",
+"di": "Bragança",
+"dico": "0407"
 },
 "41.5408,-7.9710": {
 "co": "Cabeceiras de Basto",
@@ -5334,6 +5849,11 @@
 "di": "Braga",
 "dico": "0303"
 },
+"41.5964,-7.1642": {
+"co": "Mirandela",
+"di": "Bragança",
+"dico": "0407"
+},
 "41.5978,-8.4581": {
 "co": "Vila Verde",
 "di": "Braga",
@@ -5373,6 +5893,11 @@
 "co": "Viana do Castelo",
 "di": "Viana do Castelo",
 "dico": "1609"
+},
+"41.6168,-8.3562": {
+"co": "Braga",
+"di": "Braga",
+"dico": "0303"
 },
 "41.6226,-8.4262": {
 "co": "Amares",
@@ -5469,6 +5994,11 @@
 "di": "Viana do Castelo",
 "dico": "1609"
 },
+"41.6961,-8.8503": {
+"co": "Viana do Castelo",
+"di": "Viana do Castelo",
+"dico": "1609"
+},
 "41.6994,-8.1722": {
 "co": "Terras de Bouro",
 "di": "Braga",
@@ -5539,6 +6069,11 @@
 "di": "Viana do Castelo",
 "dico": "1606"
 },
+"41.8102,-6.9970": {
+"co": "Vinhais",
+"di": "Bragança",
+"dico": "0412"
+},
 "41.8132,-8.8645": {
 "co": "Caminha",
 "di": "Viana do Castelo",
@@ -5558,6 +6093,11 @@
 "co": "Caminha",
 "di": "Viana do Castelo",
 "dico": "1602"
+},
+"41.8535,-6.9319": {
+"co": "Vinhais",
+"di": "Bragança",
+"dico": "0412"
 },
 "41.8640,-8.8640": {
 "co": "Caminha",

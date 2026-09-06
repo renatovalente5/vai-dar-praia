@@ -252,7 +252,8 @@ ${listaConcelhos(r)}
 
     <p class="texto__data">Lista de praias do
     <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>
-    (ODbL). Concelhos da CAOP, Direcção-Geral do Território. As praias de rio estão
+    (ODbL) e das águas balneares identificadas pela <a href="https://apambiente.pt/agua/aguas-balneares" target="_blank" rel="noopener">Agência Portuguesa do Ambiente</a>.
+    Concelhos da CAOP, Direcção-Geral do Território. As praias de rio estão
     marcadas: a nota delas <a href="/metodologia/#rio">não é directamente comparável</a>
     com a de uma praia de mar.</p>
 

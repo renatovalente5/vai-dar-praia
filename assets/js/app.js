@@ -146,6 +146,13 @@
     var res = [];
     for (var i = 0; i < PRAIAS.length; i++) {
       var p = PRAIAS[i], alvo = p.b, pontos = 0, falhou = false;
+      /* LIMPA-SE À ENTRADA, e para todas — não só para as que casam. O `al` é
+         a marca de «foi este nome oficial que te trouxe aqui» e vive no
+         próprio registo, como o `d` da distância. Se só se limpasse nas que
+         casam, uma praia que casou numa procura anterior guardava a marca e
+         mostrava-a na procura seguinte, ao lado de uma palavra que nada tinha
+         que ver com ela. */
+      p.al = null;
       for (var t = 0; t < termos.length; t++) {
         var k = alvo.indexOf(termos[t]);
         if (k === -1) { falhou = true; break; }
@@ -153,9 +160,24 @@
         pontos -= Math.min(k, 30) * 0.3;
       }
       if (falhou) continue;
+      /* QUAL O NOME QUE FEZ O ENCONTRO. Se os termos todos cabem no nome que o
+         cartão mostra, não há nada a explicar. Se não cabem, foi um nome
+         oficial que os encontrou — e mostrar «Praia Velha» a quem escreveu
+         «Esmoriz» sem dizer porquê é mostrar uma praia que ele não pediu. */
+      if (p.a) {
+        var soNome = normalizar(p.n);
+        for (var u = 0; u < termos.length; u++) {
+          if (soNome.indexOf(termos[u]) !== -1) continue;
+          var outros = p.a.split(' · ');
+          for (var v = 0; v < outros.length; v++) {
+            if (normalizar(outros[v]).indexOf(termos[u]) !== -1) { p.al = outros[v]; break; }
+          }
+          if (p.al) break;
+        }
+      }
       /* praias de mar primeiro: é o que a esmagadora maioria procura */
       if (p.m) pontos += 12;
-      pontos -= alvo.length * 0.08;
+      pontos -= p.bl * 0.08;
       res.push({ p: p, s: pontos });
     }
     res.sort(function (a, b) { return b.s - a.s; });
@@ -174,6 +196,7 @@
         return '<li class="sugestao" role="option" id="sug-' + i + '" aria-selected="false"' +
           ' data-i="' + PRAIAS.indexOf(p) + '">' +
           '<span class="sugestao__nome">' + esc(p.n) + '</span>' +
+          (p.al ? '<span class="sugestao__alias">' + esc(p.al) + '</span>' : '') +
           (p.m ? '' : '<span class="sugestao__rio">rio</span>') +
           '<span class="sugestao__meta">' + esc(p.c ? p.c + ' · ' + p.r : p.r) +
             (p.d != null ? ' · ' + num(p.d) + ' km' : '') + '</span>' +
@@ -293,7 +316,9 @@
          três. «Mais perto de ti» a mostrar o que está longe é a única coisa
          que este botão não pode fazer. */
       var perto = PRAIAS
-        .map(function (p) { p.d = distancia(la, lo, p.la, p.lo); return p; })
+        /* E o `al` limpa-se aqui também: esta lista não vem de ninguém ter
+           escrito nada, portanto não há nome oficial nenhum a explicar. */
+        .map(function (p) { p.d = distancia(la, lo, p.la, p.lo); p.al = null; return p; })
         .sort(function (x, y) { return x.d - y.d; })
         .slice(0, 6);
       if (!perto.length || perto[0].d > 300) {
@@ -1905,7 +1930,22 @@
          de bater certo. E não se pode «corrigir» essa função sem regenerar
          isto: o SEO.md avisa que ela produz espaços a dobrar e que arranjá-la
          parte a procura. */
-      for (var i = 0; i < d.length; i++) if (d[i].b == null) d[i].b = normalizar(d[i].n);
+      /* E O CAMPO `a` ENTRA NA PROCURA. É a lista dos nomes oficiais da APA
+         que não são o nome que o cartão mostra — «Esmoriz» na Praia Velha,
+         «Rocha Baixinha» na Praia da Falésia. Sem isto, quem escreve o nome
+         que está na bandeira azul e no edital não encontra nada, que foi
+         exactamente o que aconteceu a quem foi procurar a Praia de Esmoriz. */
+      for (var i = 0; i < d.length; i++) {
+        if (d[i].b == null) d[i].b = normalizar(d[i].n + (d[i].a ? ' ' + d[i].a : ''));
+        /* E O COMPRIMENTO DO NOME À PARTE. A procura desempata a favor do nome
+           mais curto — quem escreve «praia» quer a «Praia» e não a «Praia
+           Grande de Porto Côvo» —, e media isso pelo campo de busca inteiro.
+           Com os nomes oficiais lá dentro, o campo de busca de uma praia com
+           três nomes oficiais passou a ser três vezes mais comprido do que o
+           nome dela, e ela caía no fim da lista por causa de palavras que nem
+           sequer aparecem no ecrã. O desempate é entre NOMES. */
+        if (d[i].bl == null) d[i].bl = normalizar(d[i].n).length;
+      }
       PRAIAS = d;
       desenharFavoritos();
       /* A troca do código já foi feita no arranque, fora desta cadeia. Aqui só

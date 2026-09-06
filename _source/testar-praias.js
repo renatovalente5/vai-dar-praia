@@ -4,6 +4,7 @@
 
 global.window = global;
 require('../assets/js/modelo.js');
+const { morrer } = require('./rede.js');
 var M = global.Modelo;
 var fs = require('fs');
 
@@ -272,4 +273,4 @@ function ok(cond, texto) {
   }
   console.log('='.repeat(56));
   process.exit(falhas.length ? 1 : 0);
-})();
+})().catch(function (e) { morrer('testar-praias.js', e); });

@@ -35,9 +35,20 @@ browser de quem visita.
 
 - **Previsão:** [Open-Meteo](https://open-meteo.com) — gratuita, sem chave, CORS
   aberto. Uma chamada à API de meteorologia e outra à API marinha.
-- **Praias:** 995 praias portuguesas do [OpenStreetMap](https://www.openstreetmap.org/copyright),
-  760 de mar e 235 de rio, com coordenadas. A separação entre mar e rio foi
-  feita a perguntar à própria API marinha quais os pontos que têm dados de mar.
+- **Praias:** 1239 sítios de banho portugueses — 879 de mar e 360 de água
+  interior (rios, albufeiras, lagoas, piscinas naturais). Vêm de DUAS fontes,
+  e a divisão de trabalho entre elas é deliberada: o
+  [OpenStreetMap](https://www.openstreetmap.org/copyright) diz **onde estão e
+  como se chamam**; as [águas balneares identificadas pela
+  APA](https://apambiente.pt/agua/aguas-balneares) dizem **quais existem**.
+  Verificar a lista só contra o OSM era perguntar à cópia se concordava com o
+  original de onde saiu — e escondeu durante meses 131 águas balneares
+  oficiais, entre elas a ilha de Santa Maria inteira. 233 praias trazem também
+  o nome oficial, que muitas vezes não é o do OSM: quem escreve «Esmoriz»
+  encontra a que o OSM chama «Praia Velha».
+  A separação entre mar e água interior é medida, não adivinhada: pergunta-se
+  à API marinha quais os pontos que têm ondulação, com a categoria da APA a
+  mandar quando ela diz que a água é doce.
 - **Modelo:** [MODELO.md](MODELO.md) — a especificação completa, com a origem de
   cada limiar. Vale a pena ler se quiseres discordar com fundamento.
 
@@ -66,5 +77,7 @@ node -e "global.window=global; require('./assets/js/modelo.js'); require('./_sou
 
 ## Licenças
 
-Código sob licença MIT. Dados de previsão da Open-Meteo (CC BY 4.0) e lista de
-praias do OpenStreetMap (ODbL) — a atribuição está no rodapé do site.
+Código sob licença MIT. Dados de previsão da Open-Meteo (CC BY 4.0), lista de
+praias do OpenStreetMap (ODbL) e águas balneares identificadas pela Agência
+Portuguesa do Ambiente (informação administrativa pública, reutilizável ao
+abrigo do art. 19.º da Lei 26/2016) — a atribuição está no rodapé do site.

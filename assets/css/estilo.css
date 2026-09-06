@@ -361,6 +361,15 @@ body[data-cor="vermelho"] .ceu__sol { opacity: .12; }
   font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
   color: var(--mar); border: 1px solid currentColor; border-radius: 999px; padding: 0 .4em;
 }
+/* O NOME OFICIAL QUE FEZ O ENCONTRO. Quem escreve «Esmoriz» e recebe «Praia
+   Velha» tem de perceber porquê, senão parece que o site abriu outra praia.
+   Não é uma etiqueta como a de rio — é a mesma palavra que foi escrita —, por
+   isso vai em texto normal e entre aspas baixas, que é como se cita em
+   português. Não leva `white-space: nowrap`: alguns são compridos («Praia
+   Velha dos Pescadores») e num telemóvel de 375 px têm de poder quebrar. */
+.sugestao__alias { font-size: .82rem; color: var(--tinta-2); }
+.sugestao__alias::before { content: "«"; }
+.sugestao__alias::after { content: "»"; }
 .procura__estado { text-align: center; color: var(--tinta-2); font-size: .9rem; margin-top: .6rem; min-height: 1.4em; }
 
 /* ======================================================== RESULTADO ==== */

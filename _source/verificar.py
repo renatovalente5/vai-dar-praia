@@ -648,16 +648,159 @@ try:
               % fora[0]['onde'])
 finally: c.fechar()
 
+print('\n== 2b. os nomes oficiais encontram-se ==')
+# A GUARDA QUE FALTAVA, e que custou uma pergunta de uma amiga do autor:
+# «não encontro a Praia de Esmoriz».
+#
+# Encontrava-se, mas com outro nome. O OSM chama-lhe «Praia Velha», e o site
+# só sabia procurar pelo nome do OSM. A lista de águas balneares da Agência
+# Portuguesa do Ambiente — que é quem designa as praias deste país — chama-lhe
+# «Esmoriz», e é esse o nome que está na bandeira azul, no edital e na boca das
+# pessoas.
+#
+# Esta secção escreve na caixa de procura o nome OFICIAL de cada uma das 761
+# águas balneares do país e exige que alguma das sugestões seja uma praia a
+# menos de 4 km do ponto oficial. Não verifica que o site tem uma praia com
+# aquele nome — verifica a única coisa que interessa a quem procura: escrever
+# o nome leva-me àquela areia.
+#
+# Corre num carregamento de página só e sem tocar na rede: a procura é
+# síncrona e vive toda em memória, portanto as 761 consultas custam menos de
+# dois segundos. Não há desculpa para a amostragem.
+_APA = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                    '_source', 'aguas-balneares.json')
+if not os.path.exists(_APA):
+    semMedida('falta o _source/aguas-balneares.json — os nomes oficiais ficam por verificar')
+else:
+    _aguas = json.load(open(_APA, encoding='utf8'))['aguas']
+    _magro = json.dumps([{'n': a['n'], 'co': a['co'], 'la': a['la'], 'lo': a['lo']}
+                         for a in _aguas], ensure_ascii=False)
+    c = novo(1280, 900, False)
+    try:
+        d = json.loads(c.js(r"""(async function(){
+          var praias = await (await fetch('/data/praias.json')).json();
+          var aguas = %s;
+          var caixa = document.getElementById('procura');
+          var lista = document.getElementById('sugestoes');
+          function km(a,b,x,y){ return Math.hypot((a-x)*111.32,(b-y)*84.5); }
+          /* PRIMEIRO MEDE-SE QUANTAS SUGESTÕES A LISTA MOSTRA NO MÁXIMO.
+             O app.js corta em oito, mas escrever «8» aqui era prender este
+             teste a um número que vive noutro ficheiro: no dia em que lá
+             mudasse, isto passava a mentir sem ninguém mexer nele. Mede-se. */
+          var tecto = 0, res = [];
+          for (var i = 0; i < aguas.length; i++) {
+            caixa.focus(); caixa.value = aguas[i].n;
+            caixa.dispatchEvent(new Event('input', {bubbles:true}));
+            var its = [].slice.call(lista.querySelectorAll('.sugestao[data-i]'));
+            var perto = Infinity, alias = false;
+            for (var j = 0; j < its.length; j++) {
+              var p = praias[+its[j].dataset.i];
+              if (!p) continue;
+              var d = km(aguas[i].la, aguas[i].lo, p.la, p.lo);
+              if (d < perto) { perto = d; alias = !!its[j].querySelector('.sugestao__alias'); }
+            }
+            if (its.length > tecto) tecto = its.length;
+            res.push({ n: aguas[i].n, co: aguas[i].co, quantas: its.length,
+                       perto: perto, alias: alias,
+                       deu: its.slice(0,3).map(function(x){ return praias[+x.dataset.i].n; }) });
+          }
+          /* A MEDIDA É 4 km, a mesma com que o actualizar-balneares.js decide
+             que uma água balnear oficial «já está no site». Este teste tem de
+             exigir exactamente o que essa ferramenta promete, nem mais nem
+             menos: com uma medida mais apertada acusava praias compridas — o
+             ponto oficial da Meia Praia de Lagos está a 2,8 km do ponto do
+             site, e as duas areias são a mesma. */
+          var maus = [], ambiguos = [], comAlias = 0;
+          for (var k = 0; k < res.length; k++) {
+            var r = res[k];
+            if (r.perto < 4) { if (r.alias) comAlias++; continue; }
+            /* LISTA CHEIA É AMBIGUIDADE, NÃO AUSÊNCIA. Seis águas balneares
+               chamam-se por um nome comum e mais nada — «Praia», «Prainha»,
+               «Lagoa», «Porto», «Ribeira», «Praia Grande». Há dezenas de
+               praias que casam com cada um deles, e nenhuma ordenação pode
+               garantir que a certa cabe nas primeiras. Quem escreve «prainha»
+               tem de acrescentar uma palavra, e isso não é um defeito do site
+               — é o que o nome dá. Distingue-se de uma ausência a sério pelo
+               que a lista devolveu: cheia é escolha a mais, curta é falta. */
+            (r.quantas >= tecto ? ambiguos : maus).push(r);
+          }
+          return JSON.stringify({ total: aguas.length, tecto: tecto,
+                                  maus: maus.slice(0, 12), quantos: maus.length,
+                                  ambiguos: ambiguos.map(function(x){ return x.n + ' (' + x.co + ')'; }),
+                                  comAlias: comAlias });
+        })()""" % _magro))
+        if d is None:
+            semMedida('a procura pelos nomes oficiais não devolveu nada')
+        elif d['quantos']:
+            erro('%d dos %d nomes oficiais não encontram a praia: %s'
+                 % (d['quantos'], d['total'],
+                    json.dumps(d['maus'], ensure_ascii=False)[:600]))
+        else:
+            print('  nomes oficiais  ✓ os %d encontram a praia certa (%d pelo nome oficial '
+                  'que o cartão não mostra)' % (d['total'], d['comAlias']))
+            if d['ambiguos']:
+                print('   · %d nomes oficiais são palavras comuns e a lista enche antes '
+                      'de lá chegar: %s' % (len(d['ambiguos']), ', '.join(d['ambiguos'])))
+
+        # E O NOME QUE FEZ O ENCONTRO TEM DE APARECER. Mostrar «Praia Velha» a
+        # quem escreveu «Esmoriz» sem dizer porquê é mostrar uma praia que a
+        # pessoa não pediu — e ela fecha a lista a pensar que o site não tem a
+        # dela. O alias explica o salto.
+        alvo = json.loads(c.js(r"""(async function(){
+          var praias = await (await fetch('/data/praias.json')).json();
+          var p = praias.filter(function(x){ return x.a; })[0];
+          if (!p) return JSON.stringify(null);
+          var nome = p.a.split(' · ')[0];
+          var caixa = document.getElementById('procura');
+          caixa.focus(); caixa.value = nome;
+          caixa.dispatchEvent(new Event('input', {bubbles:true}));
+          var li = document.querySelector('#sugestoes .sugestao[data-i]');
+          var al = li && li.querySelector('.sugestao__alias');
+          return JSON.stringify({ escrito: nome,
+            cartao: li ? li.querySelector('.sugestao__nome').textContent : null,
+            alias: al ? al.textContent : null,
+            visivel: !!(al && al.getClientRects().length) });
+        })()"""))
+        if not alvo:
+            semMedida('nenhuma praia tem nome oficial alternativo — nada a verificar')
+        elif not alvo['visivel'] or not alvo['alias']:
+            erro('escrevi %r, o cartão diz %r e nada explica porquê — o nome oficial '
+                 'que fez o encontro não aparece na sugestão'
+                 % (alvo['escrito'], alvo['cartao']))
+        else:
+            print('  o porquê         ✓ escrever %r mostra %r com «%s» ao lado'
+                  % (alvo['escrito'], alvo['cartao'], alvo['alias']))
+    finally: c.fechar()
+
 print('\n== 3. praia de rio (sem dados de mar) ==')
+# A PRAIA DE RIO ESCOLHE-SE PELOS DADOS, e não pela palavra «fluvial» no nome.
+# Escrevia «fluvial» e carregava na primeira sugestão. Funcionou até ao dia em
+# que a primeira passou a ser a «Praia fluvial do Negrito» — que é uma zona de
+# banhos DE MAR em Angra do Heroísmo, com esse nome no OpenStreetMap e `m=1`
+# aqui, porque a APA lhe chama costeira e a API marinha lhe dá ondulação. A
+# secção acusava então o site de mostrar o factor «Água do mar» numa praia de
+# rio, num cartão que era mesmo de mar.
+#
+# O nome não diz se uma água é doce; o campo `m` diz, que é o que o site usa
+# para decidir. Pergunta-se ao ficheiro e escolhe-se pelo índice.
+_praias = json.load(open(os.path.join(RAIZ, 'data', 'praias.json'), encoding='utf8'))
+_rio = next((i for i, x in enumerate(_praias)
+             if x.get('m') == 0 and len(x['n']) > 14), None)
+if _rio is None:
+    semMedida('não há nenhuma praia de água interior no ficheiro — nada a verificar')
 c=novo(1280,900,False)
 try:
     c.js("""(function(){var i=document.getElementById('procura');
-      i.value='fluvial'; i.dispatchEvent(new Event('input',{bubbles:true}));})()""")
+      i.value=%s; i.dispatchEvent(new Event('input',{bubbles:true}));})()"""
+      % json.dumps(_praias[_rio]['n']))
     time.sleep(.8)
     # A praia de rio escolhe-se pela sugestão, não por um atalho — mas a espera
     # é a mesma história: quarenta segundos a olhar para o nome, e não cinco a
     # dormir. Sem isto o runner dizia que a praia de rio não abria.
-    c.js("document.querySelector('.sugestao[data-i]').click()")
+    _alvo = c.js("!!document.querySelector('.sugestao[data-i=\"%d\"]')" % _rio)
+    if not _alvo:
+        erro('a procura por %r não devolveu a própria praia' % _praias[_rio]['n'])
+    c.js("document.querySelector('.sugestao[data-i=\"%d\"]').click()" % _rio)
     _t0 = time.time()
     while time.time() - _t0 < 40:
         if c.js("document.getElementById('v-praia').textContent"): break
@@ -1675,6 +1818,7 @@ def _mm(mm):
       clearInterval(t); var o=window.Modelo.avaliarDia,n=0;
       window.Modelo.avaliarDia=function(){var r=o.apply(this,arguments);
         if(n++===0&&r&&r.partes&&r.partes[0]&&r.partes[0].d){
+          window.__mmEnxertado=true;
           r.partes[0].d.mm=%s;
           /* e a PROBABILIDADE baixa: num dia de chuva o rácio do factor já é
              mau por si e marcava a linha pelo caminho certo, sem o ensaio dos
@@ -1719,6 +1863,15 @@ def _mm(mm):
           var pc = ((l&&l.querySelector('.nums__valor')||{}).textContent||'').match(/([\d,.]+)\s*%/);
           var prob = pc ? parseFloat(pc[1].replace(',', '.')) : null;
           return { marcada: !!(l&&l.querySelector('.nums__mau')),
+                   /* O ENXERTO PEGOU? Sem isto esta guarda é cega: quando o
+                      primeiro `avaliarDia` vem sem `partes[0].d` — acontece
+                      quando o modelo não pontuou aquela metade do dia — os
+                      milímetros nunca chegam a ser postos, a linha da chuva
+                      não se marca (e bem: não há chuva nenhuma) e a guarda
+                      lia isso como «o limiar de 0,5 mm está partido».
+                      Chumbou assim três noites seguidas (2, 3 e 4 de Setembro
+                      de 2026) sem haver defeito nenhum no site. */
+                   enxertado: !!window.__mmEnxertado,
                    prob: prob,
                    racio: (prob != null && window.Modelo)
                      ? Modelo._pontos.chuva(prob) / Modelo.PESOS.chuva : null,
@@ -1729,6 +1882,9 @@ antes = len(falhas)
 baixo, alto = _mm('0.3'), _mm('0.8')
 if baixo is None or alto is None or baixo.get('vetado') or alto.get('vetado'):
     print('  · o enxerto não pegou — o limiar dos milímetros fica por medir')
+elif not baixo.get('enxertado') or not alto.get('enxertado'):
+    semMedida('os milímetros de chuva não chegaram a ser enxertados '
+              '(a parte da manhã veio sem dados) — o limiar fica por medir hoje')
 else:
     if baixo['marcada'] and (baixo.get('racio') is None or baixo['racio'] < 0.40):
         semMedida('a 0,3 mm a linha da chuva marca-se pelo RÁCIO (%s %% de '
@@ -1738,7 +1894,10 @@ else:
         erro('0,3 mm previstos e a chuva já leva marca — o limiar medido é 0,5 '
              '(probabilidade %s %%, rácio %.2f, portanto não foi por aí)'
              % (baixo.get('prob'), baixo.get('racio') or 0))
-    if not alto['marcada']: erro('0,8 mm previstos e a chuva não leva marca — chove mesmo em 64%% dos casos')
+    if not alto['marcada']:
+        erro('0,8 mm previstos e a chuva não leva marca — chove mesmo em 64%% dos '
+             'casos (probabilidade %s %%, rácio %.2f)'
+             % (alto.get('prob'), alto.get('racio') or 0))
     if len(falhas) == antes:
         print('  0,5 mm        ✓ 0,3 mm não marca, 0,8 mm marca, sem veto nenhum')
 

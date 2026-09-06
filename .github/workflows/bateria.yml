@@ -100,6 +100,35 @@ jobs:
           # A recolha altera o _source/osm-praias.json; não se commita daqui.
           git checkout -- _source/osm-praias.json || true
 
+      # A LISTA OFICIAL DA APA. É a que diz QUAIS as praias que existem — o
+      # OpenStreetMap só diz onde estão e como se chamam. Vive aqui pela mesma
+      # razão que o passo do Overpass: vai à rede de terceiros, e a resposta
+      # certa a um desvio é alguém olhar, não travar o deploy.
+      #
+      # A época balnear muda todos os anos e a lista com ela: praias novas,
+      # praias que deixam de ser designadas, datas e bandeiras. Sem isto, a
+      # cópia envelhece em silêncio — que foi exactamente como o site esteve
+      # sem 131 águas balneares oficiais, quatro delas a ilha de Santa Maria
+      # inteira, sem nada no projecto capaz de dar por isso.
+      - name: A lista de praias tem as águas balneares oficiais
+        continue-on-error: true
+        run: |
+          set +e
+          node _source/actualizar-balneares.js --recolher --verificar
+          codigo=$?
+          set -e
+          if [ "$codigo" = "2" ]; then
+            echo "::warning::A APA não respondeu — a lista oficial não foi verificada."
+            echo '⚠️ A APA não respondeu; lista oficial por verificar.' >> "$GITHUB_STEP_SUMMARY"
+          elif [ "$codigo" != "0" ]; then
+            echo "::warning::A lista de praias divergiu das águas balneares oficiais."
+            echo '⚠️ Faltam águas balneares oficiais — ver o registo.' >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo '✅ As 761 águas balneares oficiais estão todas no site.' >> "$GITHUB_STEP_SUMMARY"
+          fi
+          # A recolha reescreve o ficheiro; não se commita daqui.
+          git checkout -- _source/aguas-balneares.json || true
+
       - name: A bateria de browser
         id: bateria
         env:

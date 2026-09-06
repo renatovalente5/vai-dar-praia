@@ -718,4 +718,6 @@ quatro modelos** — ECMWF, ICON, GFS e UKMO. Medido no Furadouro, mesmo ponto e
 mesma janela: ECMWF 10,8 · ICON 11,2 · KNMI 12,7 · Météo-France 13,5 · UKMO 13,8
 · GFS 16,0 km/h. A dispersão entre modelos é de 1,6× e o modelo por omissão
 calhava no extremo baixo. Mar: Open-Meteo Marine.
-Lista de praias: [OpenStreetMap](https://www.openstreetmap.org/copyright) (ODbL).
+Lista de praias: [OpenStreetMap](https://www.openstreetmap.org/copyright) (ODbL)
+e [águas balneares identificadas](https://apambiente.pt/agua/aguas-balneares) pela
+Agência Portuguesa do Ambiente.

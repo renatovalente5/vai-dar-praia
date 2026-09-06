@@ -339,6 +339,24 @@ console.log('\n== 7. os portões das metades do dia ==');
   } else ok('a página conta a história do detector que saiu');
 }
 
+/* ---------------------------------------------------------------------- */
+/* AS CONTAGENS ESCRITAS À MÃO. Estavam as três desactualizadas — a descrição
+   do <head> dizia «995 praias» e o ficheiro tinha 1131 — e nada no projecto
+   dava por isso, porque um número numa frase não tem testes. Este é o mesmo
+   defeito dos contactos escritos à mão nas páginas legais: o texto e a fonte
+   da verdade separam-se em silêncio, e quem lê acredita no texto.
+
+   A contagem é a do data/praias.json, que é quem manda. */
+const quantas = JSON.parse(fs.readFileSync(path.join(RAIZ, 'data/praias.json'), 'utf8')).length;
+for (const f of ['index.html', '404.html', 'metodologia/index.html']) {
+  const t = fs.readFileSync(path.join(RAIZ, f), 'utf8');
+  const velhas = [...t.matchAll(/\b(\d{3,4}) praias\b/g)]
+    .map((m) => +m[1]).filter((x) => x !== quantas);
+  if (velhas.length) {
+    erro(`${f} diz «${velhas[0]} praias» e o ficheiro tem ${quantas}`);
+  } else ok(`${f} não tem contagens de praias desactualizadas`);
+}
+
 console.log('\n' + '='.repeat(54));
 console.log('FALHAS: ' + falhas);
 console.log('='.repeat(54));

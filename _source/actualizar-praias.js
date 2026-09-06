@@ -32,11 +32,13 @@
 'use strict';
 const fs = require('fs');
 const path = require('path');
+const { morrer } = require('./rede.js');
 
 const RAIZ = path.dirname(__dirname);
 const PRAIAS = path.join(RAIZ, 'data', 'praias.json');
 const OSM = path.join(RAIZ, '_source', 'osm-praias.json');
 const CONSULTA = path.join(RAIZ, '_source', 'overpass.txt');
+const BALNEARES = path.join(RAIZ, '_source', 'aguas-balneares.json');
 
 /* AS ÁGUAS FECHADAS DA COSTA, uma a uma e com a razão à frente.
    =============================================================
@@ -222,8 +224,14 @@ async function recolher() {
    públicos (`amenity=public_bath`, que é como as piscinas naturais dos Açores
    e da Madeira estão mapeadas) e massas de água nomeadas. */
 const MANTER_NATURAL = new Set(['beach', 'shingle', 'water']);
-const MANTER_LEISURE = new Set(['swimming_area', 'beach_resort', 'bathing_place']);
+const MANTER_LEISURE = new Set(['swimming_area', 'beach_resort', 'bathing_place', 'river_beach']);
 const FORA_BATH = new Set(['pool', 'thermal', 'hot_spring', 'onsen']);
+/* E ESTAS PROVAM O CONTRÁRIO: `bath:type=river` num `amenity=public_bath` diz
+   que ali há um rio em que se entra, que é exactamente o que se procura. Não
+   estar aqui custou 22 praias fluviais oficiais — a de Côja, a de Folques, a
+   de Foz d'Égua —, todas descartadas por «banho público sem água
+   corroborada» quando a etiqueta ao lado dizia que a água era um rio. */
+const BATH_AGUA = new Set(['river', 'lake', 'natural', 'open_air', 'sea', 'lido']);
 const FORA_LEISURE = new Set(['water_park', 'swimming_pool', 'park', 'pitch', 'playground',
   'sports_centre', 'fitness_centre', 'garden', 'marina', 'slipway', 'picnic_table']);
 const FORA_TOURISM = new Set(['camp_site', 'caravan_site', 'information', 'picnic_site',
@@ -231,8 +239,45 @@ const FORA_TOURISM = new Set(['camp_site', 'caravan_site', 'information', 'picni
 const FORA_AMENITY = new Set(['cafe', 'restaurant', 'bar', 'parking', 'toilets', 'fuel',
   'pub', 'shelter', 'bench', 'drinking_water', 'waste_basket', 'fast_food', 'ice_cream']);
 
-/* Devolve a RAZAO por que se descarta, ou null para ficar. */
-function lixo(t) {
+/* O QUE NEM UMA PROVA OFICIAL SALVA. Um café, um parque de estacionamento ou
+   uns sanitários ao lado de uma praia partilham-lhe o nome com frequência, e
+   estar a 40 m de uma água balnear oficial não os torna num sítio de banho. */
+const NUNCA = new Set(['parking', 'toilets', 'cafe', 'restaurant', 'bar', 'fuel',
+  'pub', 'fast_food', 'ice_cream', 'waste_basket', 'bench', 'drinking_water', 'shelter']);
+
+/* E UMA PLACA NÃO É UMA PRAIA, por mais oficial que seja o nome escrito nela.
+   Foi assim que a prova oficial se virou contra mim à primeira corrida: seis
+   postes `tourism=information` em Vila Nova de Gaia, com os dizeres «Zona
+   Balnear de Valadares Norte, Praia de Valadares Norte», passaram a ser seis
+   praias novas a 90-170 m de praias que o site já tinha. E um marco de um
+   trilho pedestre — «Ecovia do rabaçal: Da Praia Fluvial a Lilela» — entrou
+   como praia fluvial. O nome numa placa é o nome do sítio para onde ela
+   aponta, e não o do sítio onde ela está espetada. */
+const NEM_COM_PROVA = (t) => t.tourism === 'information' || t.information
+  || t.route || t.highway || t.railway || t.aeroway || t.public_transport;
+
+/* Devolve a RAZAO por que se descarta, ou null para ficar.
+   O `oficial` diz que este objecto foi reconhecido como uma agua balnear da
+   lista da APA — ver o casarComOficiais() mais abaixo. */
+function lixo(t, oficial) {
+  if (t.amenity && NUNCA.has(t.amenity)) return 'amenity=' + t.amenity;
+  if (t.shop || t.office) return 'comercio';
+  if (NEM_COM_PROVA(t)) return 'placa, via ou percurso';
+  /* A PROVA OFICIAL VEM ANTES DE TODAS AS HEURISTICAS, e a razao e simples: as
+     heuristicas abaixo sao minhas e a designacao e da APA. Quando discordam,
+     quem manda e quem designa.
+
+     Medido: 44 das 100 aguas balneares oficiais que faltavam ao site ESTAVAM
+     no OpenStreetMap, com o nome por extenso, e foram descartadas por este
+     filtro — 22 por «banho publico sem agua corroborada», 5 por
+     `leisure=swimming_pool` (e chamavam-se «Praia Fluvial de Almaceda»), 4 por
+     `leisure=park`, 2 por `tourism=picnic_site`, 2 por `fee=yes` (as Piscinas
+     Naturais do Porto Moniz, que tem bandeira azul), 1 por `highway`.
+
+     O `ref:EU:bwid` e a mesma prova posta pelo proprio OSM: e o identificador
+     europeu da agua balnear, igual ao `codigo_agua_balnear` da APA. */
+  if (t['ref:EU:bwid']) return null;
+  if (oficial) return null;
   /* O AREAL MANDA, e vem PRIMEIRO. Cinco praias fluviais estão mapeadas como
      `leisure=park` E `natural=beach` ao mesmo tempo — o parque de merendas e o
      areal são o mesmo polígono. Com as exclusões a correr primeiro, o
@@ -261,13 +306,49 @@ function lixo(t) {
      dos Açores e da Madeira, que são o que se quer, trazem `sport=swimming` ou
      `natural=water` ao lado. */
   if (t.amenity === 'public_bath'
-      && !(t.sport || t.natural || t.leisure || t.water)) {
+      && !(t.sport || t.natural || t.leisure || t.water
+           || (t['bath:type'] && BATH_AGUA.has(t['bath:type'])))) {
     return 'banho publico sem agua corroborada';
   }
   if (t.leisure && MANTER_LEISURE.has(t.leisure)) return null;
   if (t.amenity === 'public_bath') return null;
   if (t.water) return null;
   return 'sem etiqueta que o classifique como sitio de banho';
+}
+
+/* --------------------------------------------------- a lista da APA ------ */
+/* RECONHECER UM OBJECTO DO OSM COMO UMA ÁGUA BALNEAR OFICIAL.
+   Duas condições, e as duas são precisas de propósito:
+
+     · estar a menos de 400 m de um ponto da lista da APA, e
+     · ter o MESMO NÚCLEO DE NOME que esse ponto.
+
+   O nome é que faz o trabalho. Sem ele, «a menos de 400 m de uma praia
+   oficial» apanha o bar, o parque de campismo e o miradouro — e a seguir o
+   site tem três cartões para a mesma areia. Com ele, o «Snack-Bar do Zé» a
+   30 m da Praia do Negrito não casa, e a «Praia fluvial do Negrito» casa.
+
+   Isto NÃO é a via por que uma praia oficial entra no site — essa é o
+   actualizar-balneares.js. Isto é só o que impede o filtro de etiquetas de
+   deitar fora um objecto que a APA já designou. */
+const M_OFICIAL = 400;
+function casarComOficiais(elementos) {
+  if (!fs.existsSync(BALNEARES)) return new Map();
+  const aguas = JSON.parse(fs.readFileSync(BALNEARES, 'utf8')).aguas;
+  const oficiais = new Map();
+  for (const e of elementos) {
+    const t = e.tags || {};
+    if (!t.name) continue;
+    const c = coord(e);
+    if (c[0] == null) continue;
+    const nEl = nucleo(t.name);
+    for (const a of aguas) {
+      if (metros([a.la, a.lo], c) > M_OFICIAL) continue;
+      const nOf = nucleo(a.n);
+      if (nEl === nOf || nEl.includes(nOf) || nOf.includes(nEl)) { oficiais.set(e, a); break; }
+    }
+  }
+  return oficiais;
 }
 
 /* --------------------------------------------------------------- mar? ---- */
@@ -310,13 +391,15 @@ async function saoDeMar(pontos) {
     porNome.get(k).push(p);
   }
   const usadas = new Set();
-  const novas = [], renomeadas = [], outroNome = [];
+  const novas = [], renomeadas = [], outroNome = [], conflitos = [];
 
   const descartados = new Map();
+  const oficiais = casarComOficiais(dados.elements);
+  console.log(`  reconhecidos como águas balneares oficiais: ${oficiais.size}`);
   for (const e of dados.elements) {
     const nome = (e.tags || {}).name;
     if (!nome) continue;
-    const porque = lixo(e.tags || {});
+    const porque = lixo(e.tags || {}, oficiais.has(e));
     if (porque) { descartados.set(porque, (descartados.get(porque) || 0) + 1); continue; }
     const c = coord(e);
     const iguais = (porNome.get(semAcentos(nome)) || [])
@@ -328,6 +411,19 @@ async function saoDeMar(pontos) {
     const mesmoNucleo = praias.filter((p) => nucleo(p.n) === nucleo(nome)
       && metros([p.la, p.lo], c) < KM_MESMA_PRAIA * 1000);
     if (mesmoNucleo.length) { mesmoNucleo.forEach((p) => usadas.add(p)); continue; }
+    /* UM CARTAO POR AGUA BALNEAR OFICIAL, e este e o invariante que faltava.
+       O OSM tem a mesma agua mapeada mais do que uma vez e com especies
+       diferentes — em Pomares, Arganil, ha uma «Piscina Fluvial de Pomares» e
+       uma «Praia Fluvial de Pomares» a 70 m, e a APA designa ali UMA agua
+       balnear (PTCT7Q). O nucleo dos dois nomes nao coincide (um comeca por
+       «piscina», outro por «praia»), portanto a comparacao de nomes deixa-os
+       passar aos dois. A designacao da APA e que os junta: se a agua oficial
+       que este objecto representa JA TEM praia no ficheiro, esta e a mesma. */
+    const oficial = oficiais.get(e);
+    if (oficial) {
+      const jaTem = praias.find((p) => metros([p.la, p.lo], [oficial.la, oficial.lo]) < M_OFICIAL);
+      if (jaTem) { usadas.add(jaTem); continue; }
+    }
     /* Sem o nome: é o MESMO PONTO com outro nome, ou é ponto novo? */
     const noSitio = praias.filter((p) => metros([p.la, p.lo], c) < M_MESMO_SITIO);
     if (noSitio.length === 1 && !usadas.has(noSitio[0])) {
@@ -360,12 +456,52 @@ async function saoDeMar(pontos) {
          são duas poças, não uma mapeada duas vezes. */
       const jaNovo = novas.some((x) => metros([x.la, x.lo], c) < M_MESMO_SITIO
         || (nucleo(x.n) === nucleo(nome) && metros([x.la, x.lo], c) < KM_MESMA_PRAIA * 1000));
-      if (!jaNovo) novas.push({ n: nome, la: +c[0].toFixed(5), lo: +c[1].toFixed(5), tipo: e.type });
+      /* UM NOME QUE JA EXISTE NOUTRO SITIO NAO ENTRA SOZINHO.
+         O OSM tem os «Poceirões piscinas naturais» da Graciosa mapeados DUAS
+         vezes com o mesmo nome e a 3,6 km um do outro — sao dois nos do mesmo
+         autor, com ids seguidos, e so um deles fica a 55 m do ponto oficial da
+         APA. Sao 600 m a mais do que o KM_IGUAL, portanto a comparacao por
+         nome nao os junta, e entravam os dois: duas praias com o mesmo nome no
+         mesmo concelho dao o mesmo endereco, e o gerar-slugs.js fica sem
+         maneira de as distinguir — perde o endereco que ja estava publicado.
+
+         Nao se escolhe aqui qual das duas coordenadas esta certa: uma delas
+         esta errada no OSM e corrigi-la e uma edicao no OSM, nao uma decisao
+         deste programa. Reporta-se. A agua balnear oficial nao fica por isso
+         de fora: o actualizar-balneares.js acrescenta-a a seguir, com o nome
+         oficial, que nao colide. */
+      const nomeUsado = praias.some((x) => semAcentos(x.n) === semAcentos(nome))
+        || novas.some((x) => semAcentos(x.n) === semAcentos(nome));
+      if (nomeUsado && !jaNovo) {
+        conflitos.push({ n: nome, la: +c[0].toFixed(5), lo: +c[1].toFixed(5) });
+      } else if (!jaNovo) {
+        novas.push({ n: nome, la: +c[0].toFixed(5), lo: +c[1].toFixed(5), tipo: e.type });
+      }
     }
     /* noSitio.length > 1 ou já usada: é uma segunda representação da mesma
        praia (o OSM tem a mesma praia como way E como relation). Ignora-se. */
   }
-  const sumidas = praias.filter((p) => !usadas.has(p));
+  if (conflitos.length) {
+    console.log(`  nome ja usado noutro sitio, NAO entraram: ${conflitos.length}`);
+    for (const c2 of conflitos) console.log(`     ${c2.n} (${c2.la},${c2.lo})`);
+  }
+  /* UMA PRAIA QUE A APA DESIGNOU NAO ESTA «SUMIDA» POR FALTAR AO OSM.
+     57 das praias deste ficheiro entraram pela lista de aguas balneares
+     oficiais e nao existem no OpenStreetMap — a Vagueira, a de Sao Bernardino,
+     as quatro de Santa Maria. Sem esta linha, a comparacao diaria com o OSM
+     acusava-as todas as noites de terem desaparecido, e um aviso que aparece
+     todos os dias sem nada para corrigir e um aviso que se deixa de ler.
+
+     O OSM diz onde estao as praias; a APA diz quais existem. Faltar a uma
+     fonte que nao manda no assunto nao e uma falta. */
+  const designadas = new Set();
+  if (fs.existsSync(BALNEARES)) {
+    const aguas = JSON.parse(fs.readFileSync(BALNEARES, 'utf8')).aguas;
+    for (const p of praias) {
+      if (aguas.some((a) => metros([a.la, a.lo], [p.la, p.lo]) < M_OFICIAL)) designadas.add(p);
+    }
+  }
+  const sumidas = praias.filter((p) => !usadas.has(p) && !designadas.has(p));
   if (descartados.size) {
     const total = [...descartados.values()].reduce((a, b) => a + b, 0);
     console.log(`  descartados por nao serem sitio de banho: ${total}`);
@@ -402,7 +538,8 @@ async function saoDeMar(pontos) {
   for (const r of renomeadas) console.log(`     «${r.de}» -> «${r.para}»`);
   console.log(`  novas no OSM: ${novas.length}`);
   for (const n of novas) console.log(`     ${n.n} (${n.tipo}) ${n.la},${n.lo}`);
-  console.log(`  no site e já não no OSM: ${sumidas.length}`);
+  console.log(`  no site e já não no OSM: ${sumidas.length}`
+    + (designadas.size ? `  (e ${designadas.size} que a APA designou, que o OSM não tem de ter)` : ''));
   for (const s of sumidas) console.log(`     ${s.n} ${s.la},${s.lo}`);
 
   const nada = !renomeadas.length && !novas.length && !sumidas.length && !fechadas.length;
@@ -444,4 +581,4 @@ async function saoDeMar(pontos) {
     console.log('   node _source/gerar-slugs.js --escrever (o endereço de cada uma)');
     console.log('   node _source/gerar-praias.js           (os hubs)');
   }
-})().catch((e) => { console.error('✗ ' + e.message); process.exit(1); });
+})().catch((e) => morrer('actualizar-praias.js', e));
