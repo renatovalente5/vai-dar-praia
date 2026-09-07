@@ -598,10 +598,28 @@ try:
         if praia == praiaAntes:
             estado = c.js("(document.getElementById('procura-estado')||{}).textContent") or ''
             abertas = int(c.js("document.querySelectorAll('.sugestao[data-i]').length") or 0)
-            (semMedida if 'conseguimos' in estado else erro)(
-                'carregar com o RATO numa sugestão não fez nada: o cartão continua em %r '
-                '(sugestão: %r, sugestões abertas depois do clique: %d, o ecrã diz %r)'
-                % (praiaAntes, onde['nome'], abertas, estado))
+            # O QUE DISTINGUE «O CLIQUE NÃO FEZ NADA» DE «A API NÃO RESPONDEU».
+            # O defeito verdadeiro — o que uma amiga do Renato apanhou — é o
+            # clique não produzir efeito NENHUM: a lista fica como estava e o
+            # ecrã não diz nada, porque nunca chegou a ser pedida previsão.
+            # Se o ecrã está a dizer «A ver como está…» ou «Não conseguimos ir
+            # buscar a previsão», então o clique FEZ o seu trabalho — escolheu
+            # a praia e mandou pedir — e o que falta é a resposta da
+            # Open-Meteo. Chumbar aí é acusar o site da quota de terceiros, que
+            # é a doença que este ficheiro passou cinco noites a ter.
+            #
+            # Chumbou assim a 28 ago e a 7 set de 2026, as duas vezes com o
+            # ecrã em «A ver como está…» e ZERO sugestões abertas — isto é,
+            # com a prova de que o clique tinha funcionado escrita na própria
+            # mensagem de falha.
+            aPedir = 'A ver como está' in estado or 'conseguimos' in estado
+            (semMedida if aPedir else erro)(
+                ('a previsão não chegou a tempo depois do clique do rato — o clique '
+                 'funcionou (a lista fechou, o ecrã diz %r), o que faltou foi a resposta'
+                 if aPedir else
+                 'carregar com o RATO numa sugestão não fez nada: o cartão continua em %r '
+                 '(sugestão: %r, sugestões abertas depois do clique: %d, o ecrã diz %r)')
+                % ((estado,) if aPedir else (praiaAntes, onde['nome'], abertas, estado)))
         elif 'arcavelos' not in praia:
             erro('o rato abriu %r e a sugestão dizia %r' % (praia, onde['nome']))
         elif len(falhas) == antes:

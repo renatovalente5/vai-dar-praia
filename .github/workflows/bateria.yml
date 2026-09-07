@@ -129,6 +129,13 @@ jobs:
           # A recolha reescreve o ficheiro; não se commita daqui.
           git checkout -- _source/aguas-balneares.json || true
 
+      # UMA SEGUNDA TENTATIVA, e só quando o código foi 2.
+      # A Open-Meteo limita por MINUTO e por DIA. O limite do minuto cura-se a
+      # esperar; o do dia não. Um código 2 é uma desistência rápida — a bateria
+      # inteira demora ~20 min e a desistência sai em segundos —, portanto a
+      # repetição custa um minuto e nunca põe em risco o `timeout-minutes`.
+      # Se for mesmo o tecto do dia, a segunda tentativa devolve 2 outra vez e
+      # ficamos onde estávamos.
       - name: A bateria de browser
         id: bateria
         env:
@@ -137,7 +144,14 @@ jobs:
           set +e
           python3 _source/verificar.py
           codigo=$?
+          if [ "$codigo" = "2" ]; then
+            echo "A API não respondeu — segunda tentativa daqui a 60 s."
+            sleep 60
+            python3 _source/verificar.py
+            codigo=$?
+          fi
           set -e
+          echo "codigo=$codigo" >> "$GITHUB_OUTPUT"
           if [ "$codigo" = "2" ]; then
             echo "::warning::A Open-Meteo não respondeu — a bateria não mediu nada."
             echo '⚠️ `verificar.py`: a API não respondeu, nada medido.' >> "$GITHUB_STEP_SUMMARY"
@@ -155,6 +169,7 @@ jobs:
         run: sleep 75
 
       - name: O modelo contra praias reais
+        id: modelo
         if: always()
         env:
           CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
@@ -172,6 +187,34 @@ jobs:
             exit "$codigo"
           else
             echo '✅ `testar-praias.js`' >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      # UMA CORRIDA QUE NÃO MEDIU NADA NÃO É UMA CORRIDA VERDE.
+      # =============================================================
+      # O código 2 não pinta o workflow de vermelho, e por boas razões (ver o
+      # cabeçalho). Mas isso deixa um buraco que me apanhou a mim: na lista de
+      # corridas do GitHub, uma corrida em que os DOIS medidores desistiram por
+      # falta de resposta da API tem exactamente o mesmo visto verde de uma que
+      # mediu tudo. Eu li o visto, disse que a bateria tinha passado no runner,
+      # e não tinha passado nada — tinha desistido em 87 segundos.
+      #
+      # Não se pinta de vermelho (continuaria a ser o alarme da quota de outra
+      # pessoa), mas escreve-se no topo do resumo, em maiúsculas, que esta
+      # corrida não provou coisa nenhuma. E o passo chama-se assim de propósito:
+      # é o que aparece na página da corrida.
+      - name: Esta corrida mediu alguma coisa?
+        if: always()
+        run: |
+          b='${{ steps.bateria.outputs.codigo }}'
+          m='${{ steps.modelo.outputs.codigo }}'
+          if [ "$b" = "2" ] && [ "$m" = "2" ]; then
+            echo "::warning::ESTA CORRIDA NÃO MEDIU NADA — a API não respondeu a nenhum dos dois medidores. O visto verde não quer dizer que o site está bem."
+            {
+              echo '## ⛔ Esta corrida NÃO MEDIU NADA'
+              echo 'Os dois medidores desistiram por falta de resposta da Open-Meteo.'
+              echo 'O visto verde aqui **não** quer dizer que o site está bem — quer dizer'
+              echo 'que ninguém lhe chegou a tocar. Ver a próxima corrida agendada.'
+            } >> "$GITHUB_STEP_SUMMARY"
           fi
 
       # As fotografias SEM TEXTO que o medidor de contraste usou. Um número
