@@ -46,6 +46,39 @@ function url(base, pontos, extra) {
 }
 function comoArray(x) { return x == null ? [] : (Array.isArray(x) ? x : [x]); }
 
+/* PEDIR E LER, SEM DEITAR FORA O QUE O SERVIDOR DISSE.
+   =============================================================
+   Isto era `(await fetch(u)).json()`, duas vezes, sem olhar para o estado da
+   resposta. Quando a Open-Meteo devolveu um corpo que não era JSON, o `.json()`
+   atirou «Unexpected token 'U', "Unexpected"... is not valid JSON» — uma
+   mensagem que não diz o código HTTP, não diz qual dos dois pedidos falhou, não
+   diz o que o servidor respondeu, e não deixa ninguém decidir se aquilo é um
+   defeito nosso ou uma recusa de serviço. O CI ficou vermelho por causa dela.
+
+   E NOTE-SE QUE O `apiViva()` TINHA ACABADO DE PASSAR. Não é contradição: ele
+   sonda com UM ponto, UMA variável, UM modelo e UM dia, e a Open-Meteo pesa
+   cada pedido pelo produto disso tudo. Os dois pedidos aqui em baixo são 40
+   localizações × 10 variáveis × 4 modelos × 6 dias — centenas de vezes mais
+   caros. Uma sonda leve não prediz o que acontece a um pedido pesado, e é por
+   isso que o erro tem de ser legível AQUI e não só lá atrás. */
+async function pedirJson(u, oQue) {
+  const r = await fetch(u);
+  const corpo = await r.text();
+  let d = null;
+  try { d = JSON.parse(corpo); } catch (e) {
+    throw new Error('a API respondeu ' + r.status + ' e o corpo não é JSON, ao pedir '
+      + oQue + ': ' + corpo.slice(0, 140).replace(/\s+/g, ' '));
+  }
+  /* A Open-Meteo recusa com `{"error":true,"reason":"..."}` — às vezes com 200
+     e às vezes com 400. O código sozinho não chega para saber que foi recusa. */
+  const razao = d && !Array.isArray(d) && d.error ? String(d.reason || '') : '';
+  if (!r.ok || razao) {
+    throw new Error('a API respondeu ' + r.status + ' ao pedir ' + oQue + ': '
+      + (razao || corpo.slice(0, 140).replace(/\s+/g, ' ')));
+  }
+  return d;
+}
+
 var falhas = [], avisos = [], contagem = { verde: 0, amarelo: 0, vermelho: 0 }, testes = 0;
 var metadesFalam = 0, metadesPares = 0;
 function ok(cond, texto) {
@@ -70,12 +103,17 @@ function ok(cond, texto) {
   console.log('\nA pedir ' + praias.length + ' praias (' + mar.length + ' de mar, '
     + (praias.length - mar.length) + ' de rio) em 2 pedidos…\n');
 
-  var tempo = comoArray(await (await fetch(url('https://api.open-meteo.com/v1/forecast', praias,
+  var tempo = comoArray(await pedirJson(url('https://api.open-meteo.com/v1/forecast', praias,
     '&hourly=temperature_2m,apparent_temperature,wind_speed_10m,wind_gusts_10m,wind_direction_10m,'
     + 'cloud_cover,precipitation,precipitation_probability,uv_index,weather_code'
-    + '&daily=weather_code,precipitation_sum&models=' + MODELOS.join(',')))).json());
-  var marinho = comoArray(await (await fetch(url('https://marine-api.open-meteo.com/v1/marine', mar,
-    '&hourly=sea_surface_temperature,wave_height'))).json());
+    + '&daily=weather_code,precipitation_sum&models=' + MODELOS.join(',')),
+    'a previsão de ' + praias.length + ' praias'));
+  /* UMA PAUSA ENTRE OS DOIS. Vão os dois no mesmo segundo e disputam a mesma
+     janela de minuto da Open-Meteo — foi assim que o segundo levou com a
+     recusa que o primeiro provocou. */
+  await new Promise(function (r) { setTimeout(r, 3000); });
+  var marinho = comoArray(await pedirJson(url('https://marine-api.open-meteo.com/v1/marine', mar,
+    '&hourly=sea_surface_temperature,wave_height'), 'os dados de mar de ' + mar.length + ' praias'));
 
   ok(tempo.length === praias.length, 'a API devolveu ' + tempo.length + ' de ' + praias.length + ' praias');
   var porMar = {};
