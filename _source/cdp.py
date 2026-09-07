@@ -251,6 +251,24 @@ class Chrome:
             raise RuntimeError('o Chrome não abriu a porta de depuração')
         self.ws = WS(alvo['webSocketDebuggerUrl'])
         self.id = 0
+        # AS FALHAS DE REDE QUE O BROWSER ESCONDE.
+        # =============================================================
+        # Um `fetch` que falha numa página atira sempre a MESMA coisa —
+        # «TypeError: Failed to fetch» — e é de propósito: a norma não deixa a
+        # página saber se foi DNS, se foi a ligação, se foi o certificado ou se
+        # foi a política de origem cruzada, porque isso daria a qualquer sítio
+        # da internet um scanner da rede de quem o visita.
+        #
+        # Para quem depura, isso é uma mensagem que não diz nada. Passei três
+        # corridas do CI a adivinhar entre IPv6, DNS e quota com «Failed to
+        # fetch» como única prova. O DevTools Protocol sabe a verdade e diz-a
+        # no evento `Network.loadingFailed`: `net::ERR_NAME_NOT_RESOLVED`,
+        # `net::ERR_CONNECTION_TIMED_OUT`, `net::ERR_QUIC_PROTOCOL_ERROR`,
+        # `net::ERR_CERT_DATE_INVALID` — cada um manda para um sítio diferente.
+        #
+        # O `cmd()` lia as mensagens todas e deitava fora as que não eram a
+        # resposta que esperava. Os eventos vinham por ali e morriam ali.
+        self.falhas_de_rede = []
         # E CONFIRMA-SE QUE O ALVO RESPONDE, antes de alguém contar com ele.
         # Uma ligação aberta não prova nada: era exactamente esse o sintoma —
         # o handshake passava e o primeiro comando a sério ficava 90s à espera.
@@ -274,6 +292,19 @@ class Chrome:
         self.ws.enviar(json.dumps({'id': self.id, 'method': metodo, 'params': params}))
         while True:
             msg = json.loads(self.ws.receber())
+            # Os EVENTOS passam por aqui a caminho do lixo. Guarda-se o que
+            # interessa — e só o que interessa: guardar tudo era encher a
+            # memória com um `requestWillBeSent` por cada imagem da página.
+            if 'id' not in msg and msg.get('method') == 'Network.loadingFailed':
+                p = msg.get('params') or {}
+                self.falhas_de_rede.append({
+                    'erro': p.get('errorText') or '?',
+                    'tipo': p.get('type') or '?',
+                    'cancelado': bool(p.get('canceled')),
+                    'cors': (p.get('corsErrorStatus') or {}).get('corsError'),
+                })
+                del self.falhas_de_rede[:-40]
+                continue
             if msg.get('id') == self.id:
                 if 'error' in msg:
                     raise RuntimeError('%s: %s' % (metodo, msg['error']))
@@ -300,6 +331,13 @@ class Chrome:
 
     def abrir(self, url, espera=2.0):
         self.cmd('Page.enable')
+        # E o domínio da rede, para que as falhas cheguem cá. Custa uma
+        # subscrição de eventos e dá, quando alguma coisa corre mal, a única
+        # mensagem que diz o que foi.
+        try:
+            self.cmd('Network.enable')
+        except Exception:
+            pass
         self.cmd('Page.navigate', url=url)
         time.sleep(espera)
 

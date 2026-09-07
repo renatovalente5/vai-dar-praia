@@ -411,6 +411,49 @@ def _semPrevisao(c, limite):
             api: api, praiasJson: lista});})()"""))
     except Exception as e:
         d = {'erro ao ler o ecrã': str(e)}
+
+    # O ERRO VERDADEIRO DO CHROME, e não «Failed to fetch».
+    # =============================================================
+    # A norma obriga o `fetch` de uma página a mentir por omissão: qualquer
+    # falha vira «TypeError: Failed to fetch», porque distinguir DNS de ligação
+    # de certificado daria a qualquer sítio um scanner da rede de quem o
+    # visita. Para depurar, é uma mensagem que não diz nada — e eu passei três
+    # corridas a adivinhar entre IPv6, DNS e quota com ela na mão.
+    #
+    # O `net::ERR_*` vem do evento `Network.loadingFailed`, que o cdp.py agora
+    # guarda. Cada um manda para um sítio diferente:
+    #   ERR_NAME_NOT_RESOLVED     -> DNS
+    #   ERR_CONNECTION_TIMED_OUT  -> rota (tipicamente IPv6 sem saída)
+    #   ERR_QUIC_PROTOCOL_ERROR   -> HTTP/3 sobre UDP bloqueado
+    #   ERR_FAILED + corsError    -> a resposta veio, sem cabeçalhos CORS (429)
+    try:
+        vistas, unicas = set(), []
+        for f in getattr(c, 'falhas_de_rede', []):
+            k = (f.get('erro'), f.get('cors'))
+            if k in vistas:
+                continue
+            vistas.add(k)
+            unicas.append(f.get('erro') + (' / cors=' + f['cors'] if f.get('cors') else ''))
+        if unicas:
+            d['chrome'] = unicas[-6:]
+    except Exception:
+        pass
+
+    # E A MESMA PERGUNTA FEITA PELO PYTHON, da mesma máquina e no mesmo minuto.
+    # É esta comparação que separa «a rede não dá» de «o Chrome não dá»: no
+    # runner de 7/9 o Node trouxe a previsão inteira 75 s depois de o Chrome
+    # dizer «Failed to fetch». Uma quota apanha os dois; um problema de
+    # resolvedor, de rota ou de QUIC apanha só um.
+    try:
+        import urllib.request
+        u = ('https://api.open-meteo.com/v1/forecast?latitude=41.1765&longitude=-8.6936'
+             '&hourly=temperature_2m&forecast_days=1&models=ecmwf_ifs025')
+        with urllib.request.urlopen(u, timeout=20) as r:
+            corpo = r.read(400).decode('utf8', 'replace')
+        d['pelo python'] = 'HTTP %d, %d bytes' % (r.status, len(corpo))
+    except Exception as e:
+        d['pelo python'] = 'falhou: %s' % e
+
     # A CULPA É DA API OU DO SITE? Pergunta-se, e a resposta decide se isto
     # conta como falha ou como «não medido».
     api = str(d.get('api', ''))
