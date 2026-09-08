@@ -91,7 +91,16 @@ jobs:
           node _source/actualizar-praias.js --recolher --verificar
           codigo=$?
           set -e
-          if [ "$codigo" != "0" ]; then
+          # O 2 É «NÃO CONSEGUI PERGUNTAR», e não «a lista divergiu».
+          # Este passo ganhou o `.catch(morrer)` e passou a poder sair com 2
+          # quando o Overpass não responde — e o teste antigo, `!= 0`, dizia
+          # nesse caso que a lista tinha divergido do OpenStreetMap. É uma
+          # acusação a dados que ninguém chegou a comparar, e manda alguém
+          # procurar uma divergência que não existe.
+          if [ "$codigo" = "2" ]; then
+            echo "::warning::O Overpass não respondeu — a lista não foi comparada."
+            echo '⚠️ O Overpass não respondeu; lista por comparar.' >> "$GITHUB_STEP_SUMMARY"
+          elif [ "$codigo" != "0" ]; then
             echo "::warning::A lista de praias e o OpenStreetMap divergem — ver o registo."
             echo '⚠️ A lista de praias divergiu do OpenStreetMap.' >> "$GITHUB_STEP_SUMMARY"
           else
@@ -129,26 +138,39 @@ jobs:
           # A recolha reescreve o ficheiro; não se commita daqui.
           git checkout -- _source/aguas-balneares.json || true
 
-      # UMA SEGUNDA TENTATIVA, e só quando o código foi 2.
+      # UMA SEGUNDA TENTATIVA, e só quando a primeira DESISTIU DEPRESSA.
       # A Open-Meteo limita por MINUTO e por DIA. O limite do minuto cura-se a
-      # esperar; o do dia não. Um código 2 é uma desistência rápida — a bateria
-      # inteira demora ~20 min e a desistência sai em segundos —, portanto a
-      # repetição custa um minuto e nunca põe em risco o `timeout-minutes`.
-      # Se for mesmo o tecto do dia, a segunda tentativa devolve 2 outra vez e
-      # ficamos onde estávamos.
+      # esperar; o do dia não.
+      #
+      # A primeira versão desta condição era só «código 2», e estava errada: o
+      # verificar.py sai com 2 sempre que houve um `semMedida()` e nenhum
+      # `erro()` — e isso pode acontecer no FIM de uma corrida completa, com
+      # uma única secção por medir. Repetir aí não é «custa um minuto»: é
+      # correr outra vez os 14 minutos todos, o que com o `sleep 60` pelo meio
+      # passa dos 30 do `timeout-minutes` e mata o job — perdendo também os
+      # passos que vinham a seguir.
+      #
+      # O sinal certo não é o código, é o TEMPO. Uma desistência por falta de
+      # API sai em segundos (medido: 87 a 208 s); uma corrida que mediu demora
+      # 475 a 856 s. Repete-se só abaixo de 300 s.
       - name: A bateria de browser
         id: bateria
         env:
           CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
         run: |
           set +e
+          t0=$SECONDS
           python3 _source/verificar.py
           codigo=$?
-          if [ "$codigo" = "2" ]; then
-            echo "A API não respondeu — segunda tentativa daqui a 60 s."
+          gastou=$(( SECONDS - t0 ))
+          if [ "$codigo" = "2" ] && [ "$gastou" -lt 300 ]; then
+            echo "Desistiu em ${gastou}s sem medir — segunda tentativa daqui a 60 s."
             sleep 60
             python3 _source/verificar.py
             codigo=$?
+          elif [ "$codigo" = "2" ]; then
+            echo "Código 2 ao fim de ${gastou}s: mediu quase tudo e ficou uma secção"
+            echo "por medir. Repetir custaria outra corrida inteira — não se repete."
           fi
           set -e
           echo "codigo=$codigo" >> "$GITHUB_OUTPUT"

@@ -67,6 +67,7 @@ const RAIZ = path.dirname(__dirname);
 const PRAIAS = path.join(RAIZ, 'data', 'praias.json');
 const APA = path.join(RAIZ, '_source', 'aguas-balneares.json');
 const OSM = path.join(RAIZ, '_source', 'osm-praias.json');
+const DA_APA = path.join(RAIZ, '_source', 'praias-da-apa.json');
 
 /* O serviço da APA. É o mesmo que alimenta o visualizador do SNIAmb e o
    praias.apambiente.pt, e devolve GeoJSON em WGS84 se lho pedirmos. */
@@ -110,8 +111,75 @@ const capitalizar = (s) => String(s).toLocaleLowerCase('pt-PT').split(/\s+/)
   .map((w, i) => (i && PARTICULA.has(w)) ? w : w.charAt(0).toLocaleUpperCase('pt-PT') + w.slice(1))
   .join(' ');
 
-const km = (a, b) => Math.hypot((a[0] - b[0]) * 111.32, (a[1] - b[1]) * 84.5);
+/* A DISTÂNCIA, COM O GRAU DE LONGITUDE DA LATITUDE CERTA.
+   Estava aqui um 84,5 fixo, que é o comprimento de um grau de longitude a
+   40,62°N — a Figueira da Foz. Portugal não acaba aí. Medido: no Algarve o
+   valor certo é 88,90 (erro de 5 %), na Madeira 93,68 (erro de 9,8 %) e em
+   Porto Santo 93,4. Com 84,5 as distâncias na Madeira saem 10 % curtas, e há
+   limiares neste ficheiro — os 1,5 km do «é a mesma areia» e os 4 km do «tem o
+   mesmo nome» — onde 10 % decide. Usa-se o cosseno da latitude do meio dos
+   dois pontos, que é o que a fórmula equirectangular pede. */
+/* «X contém Y» só conta quando Y lá está como PALAVRA INTEIRA. Sem isto,
+   «lagoa i» casa com «lagoa ii» e «falesia» com «falesia acoteias» — e é
+   sempre a praia errada que fica com o nome oficial da vizinha. */
+const palavraInteira = (todo, parte) => {
+  if (!parte) return false;
+  const i = todo.indexOf(parte);
+  if (i === -1) return false;
+  const antes = i === 0 || todo[i - 1] === ' ';
+  const j = i + parte.length;
+  const depois = j === todo.length || todo[j] === ' ';
+  return antes && depois;
+};
+
+const km = (a, b) => Math.hypot(
+  (a[0] - b[0]) * 111.32,
+  (a[1] - b[1]) * 111.32 * Math.cos((a[0] + b[0]) / 2 * Math.PI / 180));
 const CAT = { 1: 'costeira', 2: 'interior', 3: 'transicao' };
+
+/* AS COORDENADAS QUE A APA PUBLICA ERRADAS, uma a uma e com a prova à frente.
+   =============================================================
+   A lista oficial é a autoridade sobre QUE praias existem. Não é infalível
+   sobre ONDE estão — e um ponto errado entra aqui sem resistência nenhuma,
+   porque este programa foi escrito a confiar nela.
+
+   Medido: o `gerar-concelhos.py` recusou a «Praia do Verde Lago» por estar a
+   11,4 km de qualquer município português. A APA publica-a em
+   37,10183 / −7,29213, que é ao largo de Isla Canela, do lado espanhol da foz
+   do Guadiana. Tem bandeira azul e o código PTCU8X.
+
+   Onde ela está mesmo: o OpenStreetMap tem a `way 79503288` «Praia Verde»
+   (wikidata Q10352522) em 37,17395 / −7,47893 e a `way 588367516` «Praia
+   Verdelago» em 37,17241 / −7,48595 — a mesma língua de areia em Castro
+   Marim, a 18 km do ponto publicado. As duas já são cartões deste site.
+
+   CORRIGE-SE PELO CÓDIGO DA ÁGUA e não pelo nome, porque o nome pode mudar de
+   época para época e o código não. E corrige-se à mão, aqui, em vez de se
+   deixar o programa adivinhar: adivinhar coordenadas é como se põe uma praia
+   em Espanha. */
+const COORDENADA_ERRADA = {
+  /* Publicada ao largo de Isla Canela (Espanha); é a Praia Verde/Verdelago,
+     em Castro Marim. Coordenada de substituição: way 79503288 do OSM.
+     A APA corrigiu-a entretanto, para 37,17329 / −7,47962 — a 90 m desta. A
+     entrada fica: é o registo do que aconteceu, e volta a agir se regredir. */
+  PTCU8X: { era: [37.10183, -7.29213], la: 37.17395, lo: -7.47893,
+            porque: 'a APA publicou-a em Espanha, a 18 km do sítio' },
+};
+
+/* SÓ SE O VALOR PUBLICADO AINDA FOR O ERRADO.
+   Uma tabela de correcções que se aplica às cegas passa a mentir no dia em que
+   a fonte se corrige — e foi o que quase aconteceu: escrevi esta entrada de
+   manhã e à tarde a APA já publicava a coordenada certa, que a minha tabela
+   ia substituir por outra, 90 m ao lado. Uma correcção nomeia o valor que
+   substitui, ou não é uma correcção: é uma opinião com prazo. */
+function corrigirCoordenada(x) {
+  const c = COORDENADA_ERRADA[x.id];
+  if (!c) return null;
+  const iguais = Math.abs(x.la - c.era[0]) < 1e-4 && Math.abs(x.lo - c.era[1]) < 1e-4;
+  if (!iguais) return null;
+  x.la = c.la; x.lo = c.lo; x.corrigida = 1;
+  return c.porque;
+}
 
 /* ------------------------------------------------------------ recolher --- */
 async function recolher() {
@@ -137,6 +205,21 @@ async function recolher() {
       lo: +lo.toFixed(5),
     };
   }).sort((a, b) => a.id.localeCompare(b.id));
+  /* O NOME COMO UMA PESSOA O ESCREVE, guardado ao lado do oficial.
+     A APA escreve «St. António» e «S. Bernardino»; o site guarda-os por
+     extenso, que é o que se escreve na caixa de procura. A bateria precisa de
+     saber a forma escrita para poder verificar que ela encontra a praia — e
+     ter a expansão em dois sítios (aqui em JavaScript e lá em Python) era
+     garantir que um dia divergiam. Fica escrita uma vez, aqui, e viaja no
+     ficheiro. Só se grava quando difere, para não repetir 744 nomes iguais. */
+  for (const x of magro) {
+    const e = porExtenso(limpo(x.n));
+    if (e !== x.n) x.ne = e;
+  }
+  for (const x of magro) {
+    const porque = corrigirCoordenada(x);
+    if (porque) console.log(`   ${x.n} (${x.id}): ${porque} — corrigido para ${x.la},${x.lo}`);
+  }
   fs.writeFileSync(APA, '{\n "colhido": ' + JSON.stringify(new Date().toISOString().slice(0, 10))
     + ',\n "aguas": [\n' + magro.map((x) => '  ' + JSON.stringify(x)).join(',\n') + '\n ]\n}\n');
   console.log(`_source/aguas-balneares.json — ${magro.length} águas balneares oficiais`);
@@ -153,8 +236,33 @@ function casar(aguas, praias) {
     /* O MESMO NOME PERTO chega para dizer «já está» — e o raio é largo (4 km)
        porque o ponto da APA é o do posto de vigia e o do site é o centro do
        areal, e numa praia comprida isso são quilómetros. */
-    const mesmoNome = praias.find((p) => km([a.la, a.lo], [p.la, p.lo]) < KM_NOME
-      && (nucleo(p.n) === nOf || N(p.n).includes(N(a.n)) || N(a.n).includes(nucleo(p.n))));
+    /* O MAIS PERTO DOS QUE CASAM, e não o primeiro que aparecer.
+       Estava aqui um `.find()`, que devolve o primeiro elemento do ARRAY — e o
+       data/praias.json é gravado por ordem alfabética, portanto o vencedor era
+       o alfabeticamente primeiro dentro de 4 km. Medido: 27 das 761 águas
+       balneares casavam com um cartão que não era o mais perto, e 18 ficaram
+       com o nome oficial gravado no cartão errado.
+
+       O caso que melhor o mostra: a «Praia Nova da Senhora da Rocha» é uma
+       água balnear oficial a 20 m do cartão «Praia Nova»; o alias foi parar à
+       «Praia da Senhora da Rocha», 270 m ao lado, porque «Praia da» vem antes
+       de «Praia Nova» no alfabeto. Escrever o nome oficial por extenso devolvia
+       UMA sugestão só — a errada —, com a etiqueta a certificar o engano. É o
+       mesmo defeito da Praia de Esmoriz que fez nascer este ficheiro.
+
+       E o teste do nome tinha uma alternativa frouxa: `N(a.n).includes(nucleo(p.n))`
+       casa por subcadeia sem fronteira de palavra, portanto «falesia» cabia
+       dentro de «falesia acoteias» e «lagoa i» dentro de «lagoa ii». A mesma
+       lição está escrita vinte linhas abaixo, na nomeNoOsm(): «o núcleo tem de
+       ser igual, não parecido — «lagoa» cabe dentro de meio país». Esta função
+       tinha ficado com a versão que essa lição condena. */
+    const casam = praias.filter((p) => km([a.la, a.lo], [p.la, p.lo]) < KM_NOME
+      && (nucleo(p.n) === nOf || palavraInteira(N(p.n), N(a.n))
+          || palavraInteira(N(a.n), nucleo(p.n))));
+    const mesmoNome = casam.length
+      ? casam.map((p) => ({ p, d: km([a.la, a.lo], [p.la, p.lo]) }))
+             .sort((x, y) => x.d - y.d)[0].p
+      : null;
     if (mesmoNome) {
       jaEsta.push({ a, p: mesmoNome });
       const d = km([a.la, a.lo], [mesmoNome.la, mesmoNome.lo]);
@@ -192,6 +300,15 @@ const ABREVIATURA = [
 ];
 /* As que ficam abreviadas de propósito, porque é assim que se escrevem. */
 const ABREVIATURA_OK = /^(Dr|Dra|Sr|Sra|Eng|Arq|Prof)$/;
+/* A APA separa dois lugares com uma barra invertida — «Montalvo\Tesos» —, que
+   é o único sítio do ficheiro onde ela aparece e que não sobrevive a um
+   endereço nem a um nome de ficheiro. Passa a barra normal, que é o que o OSM
+   já usa nos nomes com dois lugares («Achada/Achadinha»).
+   Vive aqui em cima, e não dentro da nomeDe(), porque o caminho do ALIAS
+   também precisa dela — foi lá dentro que ficou da primeira vez, e o alias
+   gravou «Montalvo\Tesos» em cru no campo de procura. */
+const limpo = (s) => String(s).replace(/\s*\\\s*/g, '/').replace(/\s+/g, ' ').trim();
+
 function porExtenso(n) {
   let r = String(n);
   for (const [de, para] of ABREVIATURA) r = r.replace(de, para);
@@ -229,7 +346,6 @@ function nomeDe(a, porOsm) {
      é o único sítio do ficheiro onde ela aparece e que não sobrevive a um
      endereço nem a um nome de ficheiro. Passa a barra normal, que é o que o
      OSM já usa nos nomes com dois lugares («Achada/Achadinha»). */
-  const limpo = (s) => s.replace(/\s*\\\s*/g, '/').replace(/\s+/g, ' ').trim();
   if (porOsm) return limpo(porOsm);
   const n = porExtenso(limpo(a.n));
   /* UM NOME QUE É SÓ A ESPÉCIE não distingue nada. A água balnear da Graciosa
@@ -300,9 +416,33 @@ async function saoDeMar(pontos) {
   const lo = pontos.map((p) => p[1].toFixed(4)).join(',');
   const r = await fetch('https://marine-api.open-meteo.com/v1/marine?latitude=' + la
     + '&longitude=' + lo + '&hourly=wave_height&forecast_days=1&timezone=auto');
-  if (!r.ok) throw new Error('a API marinha respondeu ' + r.status);
-  let d = await r.json();
+  const corpo = await r.text();
+  let d;
+  try { d = JSON.parse(corpo); } catch (e) {
+    throw new Error('a API marinha respondeu ' + r.status + ' e o corpo não é JSON: '
+      + corpo.slice(0, 140).replace(/\s+/g, ' '));
+  }
+  /* UMA RECUSA COM 200 MARCAVA O LOTE INTEIRO COMO RIO.
+     A Open-Meteo recusa com `{"error":true,"reason":"…limit exceeded"}` e às
+     vezes com código 200. Aqui, isso passava no `r.ok`, o `Array.isArray` dava
+     falso, o objecto de erro virava um array de um elemento sem `hourly`, e a
+     função devolvia `[0]` — ou seja, «não tem ondulação», ou seja, RIO. Um
+     lote de sessenta praias de mar entrava no ficheiro como água interior, sem
+     erro nenhum e sem nada que desse por isso.
+     Um `reason` não é uma resposta: é uma recusa, e tem de estoirar. */
+  const razao = d && !Array.isArray(d) && d.error ? String(d.reason || '') : '';
+  if (!r.ok || razao) {
+    throw new Error('a API marinha respondeu ' + r.status + ': '
+      + (razao || corpo.slice(0, 140).replace(/\s+/g, ' ')));
+  }
   if (!Array.isArray(d)) d = [d];
+  /* E TEM DE VIR UMA RESPOSTA POR PONTO. Menos do que isso desalinha o
+     `lote.forEach((x, j) => mares.set(x.a.id, r[j]))` que chama isto, e cada
+     praia fica com a resposta da praia seguinte. */
+  if (d.length !== pontos.length) {
+    throw new Error('a API marinha devolveu ' + d.length + ' respostas para '
+      + pontos.length + ' pontos');
+  }
   return d.map((x) => (((x || {}).hourly || {}).wave_height || []).some((v) => v != null) ? 1 : 0);
 }
 
@@ -319,6 +459,9 @@ async function saoDeMar(pontos) {
       process.exit(2);
     }
     aguas = JSON.parse(fs.readFileSync(APA, 'utf8')).aguas;
+    /* Também à leitura: um snapshot gravado antes de a correcção existir
+       continuaria a trazer o ponto errado. */
+    for (const x of aguas) corrigirCoordenada(x);
   }
   const colhido = fs.existsSync(APA) ? JSON.parse(fs.readFileSync(APA, 'utf8')).colhido : '?';
   const praias = JSON.parse(fs.readFileSync(PRAIAS, 'utf8'));
@@ -370,19 +513,49 @@ async function saoDeMar(pontos) {
      E vai para o registo que a APA lhe atribuiu, nunca para o mais próximo:
      há quatro «Prainha» no país, e o vizinho mais perto da Prainha da Praia da
      Vitória é a «Praia dos Oficiais», que é outra areia. */
-  const encontraSe = (p, nome) => {
-    const alvo = normalizar(p.n + ' ' + (p.a || ''));
+  /* O ALIAS RECALCULA-SE INTEIRO, NUNCA SE ACRESCENTA AO QUE LÁ ESTAVA.
+     =============================================================
+     Estava `p.a = [p.a, ...novos].join(' · ')` — só somava. E a praia a que
+     uma água balnear é atribuída MUDA quando entra um cartão melhor: no dia
+     em que a «Praia da Falésia Açoteias» entrou pelo OSM, a água «Falésia
+     Açoteias» passou a ser dela — mas o nome ficou também na «Praia da
+     Falésia», onde a corrida anterior o tinha posto. Medido: 6 nomes oficiais
+     estavam em dois cartões ao mesmo tempo.
+
+     Um ficheiro que depende da ORDEM das corridas e não dos dados de entrada
+     não é reproduzível: um clone do repositório que corra isto uma vez não
+     obtém o mesmo que está commitado. Agora o campo `a` é uma função pura da
+     lista da APA mais a lista de praias — corra-se uma vez ou vinte, dá o
+     mesmo.
+
+     E O NOME VAI POR EXTENSO, pelas mesmas duas funções por que passa o nome
+     de um cartão novo. O caminho do alias não as chamava: gravava «S.
+     Bernardino» e «Montalvo\Tesos» em cru, o que é exactamente o defeito que
+     a tabela de abreviaturas existe para não deixar acontecer — e no campo de
+     procura, que é onde ele mais custa. */
+  const encontraSe = (p, nome, extra) => {
+    const alvo = normalizar(p.n + ' ' + (extra || []).join(' '));
     return N(nome).split(' ').filter(Boolean).every((t) => alvo.indexOf(t) !== -1);
   };
   const porPraia = new Map();
   for (const { a, p } of [...comAlias, ...jaEsta]) {
-    if (encontraSe(p, a.n)) continue;
-    if (!porPraia.has(p)) porPraia.set(p, new Set());
-    porPraia.get(p).add(a.n);
+    const nome = porExtenso(limpo(a.n));
+    const jaTem = porPraia.get(p) || [];
+    if (encontraSe(p, nome, jaTem)) continue;
+    if (!porPraia.has(p)) porPraia.set(p, []);
+    porPraia.get(p).push(nome);
   }
+  /* Quantos MUDAM, e não quantos existem: dizer «156 por registar» quando 150
+     já lá estavam iguais faz o --verificar chumbar todos os dias sem nada que
+     corrigir. Compara-se o que sairia com o que está. */
+  const alvoA = new Map();
+  for (const [p, lista] of porPraia) alvoA.set(p, lista.join(' · '));
   let novosAlias = 0;
-  for (const [, s] of porPraia) novosAlias += s.size;
-  console.log(`  nomes oficiais por registar  : ${novosAlias} em ${porPraia.size} praias`);
+  for (const p of praias) {
+    const certo = alvoA.get(p) || '';
+    if ((p.a || '') !== certo) novosAlias++;
+  }
+  console.log(`  nomes oficiais por registar  : ${novosAlias} praias com o campo diferente`);
 
   /* AVISO, E NAO FALHA. Casar por nome a 2 km pode ser uma praia comprida — a
      Meia Praia de Lagos tem 4 km e o ponto oficial esta numa ponta — ou pode
@@ -418,8 +591,14 @@ async function saoDeMar(pontos) {
   /* ---- aplicar --------------------------------------------------------- */
   for (const d of doces) d.p.m = 0;
 
-  /* OS ALIAS PRIMEIRO, que não dependem da rede e não podem falhar. */
-  for (const [p, s] of porPraia) {
+  /* OS ALIAS PRIMEIRO, que não dependem da rede e não podem falhar.
+     Escreve-se o campo INTEIRO, incluindo apagá-lo nas praias que deixaram de
+     ter nome oficial a explicar. */
+  for (const p of praias) {
+    const certo = alvoA.get(p) || '';
+    if (certo) p.a = certo; else delete p.a;
+  }
+  for (const [p, s] of []) {
     /* SEPARADOS POR « · », e nao por um espaco. Sao nomes proprios inteiros e
        ha praias com dois — a de Mindelo e tambem «Pinhal dos Eletricos» e
        «Laderca» —, e sem separador a procura mostrava «Pinhal dos Eletricos
@@ -480,6 +659,24 @@ async function saoDeMar(pontos) {
     if (x.tambem.length) novo.a = x.tambem.join(' · ');   /* o mesmo separador */
     praias.push(novo);
   }
+
+  /* QUEM ENTROU POR AQUI FICA REGISTADO, num ficheiro à parte.
+     O actualizar-praias.js precisa de saber quais são as praias que nunca
+     estiveram no OpenStreetMap, para não as acusar todas as noites de terem
+     desaparecido dele. Isto vive em _source/ e não no data/praias.json, que é
+     pedido a cada visita e não pode engordar com proveniência. */
+  const daApa = fs.existsSync(DA_APA)
+    ? (JSON.parse(fs.readFileSync(DA_APA, 'utf8')).pontos || []) : [];
+  for (const x of acrescentar) daApa.push([x.a.la, x.a.lo]);
+  const vistos = new Set();
+  const unicos = daApa.filter((q) => {
+    const k = q[0].toFixed(5) + ',' + q[1].toFixed(5);
+    if (vistos.has(k)) return false;
+    vistos.add(k); return true;
+  });
+  fs.writeFileSync(DA_APA, '{\n "porque": "praias que entraram pela lista oficial da APA e '
+    + 'nunca estiveram no OpenStreetMap — ver o comentario no actualizar-praias.js",\n'
+    + ' "pontos": [\n' + unicos.map((q) => '  ' + JSON.stringify(q)).join(',\n') + '\n ]\n}\n');
 
   praias.sort((p, q) => N(p.n).localeCompare(N(q.n)) || p.la - q.la);
   fs.writeFileSync(PRAIAS, '[\n' + praias.map((p) => JSON.stringify(p)).join(',\n') + '\n]\n');

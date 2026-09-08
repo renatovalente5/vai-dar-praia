@@ -94,6 +94,11 @@
 "di": "Ilha da Madeira (Madeira)",
 "dico": "3108"
 },
+"32.6617,-17.0373": {
+"co": "Ribeira Brava",
+"di": "Ilha da Madeira (Madeira)",
+"dico": "3107"
+},
 "32.6715,-17.0674": {
 "co": "Ribeira Brava",
 "di": "Ilha da Madeira (Madeira)",
@@ -1048,11 +1053,6 @@
 "co": "Lagoa",
 "di": "Faro",
 "dico": "0806"
-},
-"37.1018,-7.2921": {
-"co": "Vila Real de Santo António",
-"di": "Faro",
-"dico": "0816"
 },
 "37.1018,-8.3703": {
 "co": "Lagoa",

@@ -250,6 +250,25 @@ naoMedido=[]
 def erro(m): falhas.append(m); print('   ✗ '+m)
 def semMedida(m): naoMedido.append(m); print('   · '+m)
 
+class _Saltar(Exception):
+    """Esta secção não tem o que medir — sai limpa, sem levar as outras."""
+    pass
+
+
+def aPedirPrevisao(estado):
+    """O ecrã está à espera da API, ou desistiu dela?
+
+    É a pergunta que separa «o site não fez nada» de «a Open-Meteo não
+    respondeu», e tem de ser a MESMA em todo o lado. Estava escrita duas vezes
+    e diferente: a guarda do rato aceitava «A ver como está…» e a do Enter, no
+    mesmo Chrome e setenta linhas acima, só aceitava «Não conseguimos». Com a
+    API pendurada — um pedido que nem resolve nem rejeita em 40 s — o ecrã fica
+    no primeiro dos dois: o rato dizia «não medi» e o Enter chumbava o site.
+    Dois veredictos opostos, no mesmo minuto, para a mesma causa.
+    """
+    e = estado or ''
+    return 'A ver como está' in e or 'conseguimos' in e
+
 
 def _apiViva():
     """A Open-Meteo ainda responde, ou já se esgotou a quota do dia?
@@ -582,7 +601,7 @@ try:
     print('  Enter escolheu:', esc or '(nada em 40s)')
     if not esc:
         estado = c.js("(document.getElementById('procura-estado')||{}).textContent") or ''
-        (semMedida if 'conseguimos' in estado else erro)(
+        (semMedida if aPedirPrevisao(estado) else erro)(
             'Enter não escolheu praia nenhuma (o ecrã diz %r)' % estado)
 
     # sem resultados: a mensagem tem de ir para a região live, e o aria-expanded
@@ -655,7 +674,7 @@ try:
             # ecrã em «A ver como está…» e ZERO sugestões abertas — isto é,
             # com a prova de que o clique tinha funcionado escrita na própria
             # mensagem de falha.
-            aPedir = 'A ver como está' in estado or 'conseguimos' in estado
+            aPedir = aPedirPrevisao(estado)
             (semMedida if aPedir else erro)(
                 ('a previsão não chegou a tempo depois do clique do rato — o clique '
                  'funcionou (a lista fechou, o ecrã diz %r), o que faltou foi a resposta'
@@ -734,7 +753,16 @@ if not os.path.exists(_APA):
     semMedida('falta o _source/aguas-balneares.json — os nomes oficiais ficam por verificar')
 else:
     _aguas = json.load(open(_APA, encoding='utf8'))['aguas']
-    _magro = json.dumps([{'n': a['n'], 'co': a['co'], 'la': a['la'], 'lo': a['lo']}
+    # O NOME COMO UMA PESSOA O ESCREVE, e não a etiqueta abreviada da APA.
+    # A lista oficial diz «St. António» e «S. Bernardino»; ninguém escreve isso
+    # na caixa de procura, e o site guarda-os por extenso. Perguntar aqui pela
+    # forma abreviada era exigir do site uma coisa que ele não promete — e que
+    # não serve ninguém.
+    # O campo `ne` vem do próprio actualizar-balneares.js, que é quem faz a
+    # expansão: tê-la escrita também aqui, em Python, era garantir que um dia
+    # as duas divergiam.
+    _magro = json.dumps([{'n': a.get('ne') or a['n'], 'co': a['co'],
+                          'la': a['la'], 'lo': a['lo']}
                          for a in _aguas], ensure_ascii=False)
     c = novo(1280, 900, False)
     try:
@@ -822,6 +850,57 @@ else:
             alias: al ? al.textContent : null,
             visivel: !!(al && al.getClientRects().length) });
         })()"""))
+        # E A OUTRA METADE DA ALTERAÇÃO: O DESEMPATE PELO COMPRIMENTO DO NOME.
+        # =============================================================
+        # A 2b acima mede a ENTRADA dos nomes oficiais no campo de procura —
+        # «alguma das oito sugestões está a menos de 4 km do ponto oficial».
+        # Não mede a ORDENAÇÃO, e a alteração de hoje mexeu nas duas: o
+        # `pontos -= p.bl * 0.08` passou a descontar pelo comprimento do NOME e
+        # não do campo de busca inteiro. Sem isto, uma praia com três nomes
+        # oficiais tem um campo três vezes mais comprido e cai no fim da lista
+        # por causa de palavras que nem sequer aparecem no ecrã — e a 2b
+        # passava à mesma, porque oito lugares chegam para disfarçar.
+        #
+        # A asserção é a mais simples que exercita o desempate: escrever o nome
+        # EXACTO de uma praia cujo nome é único no país tem de a pôr em
+        # PRIMEIRO lugar. Se o desconto voltar a ser pelo campo inteiro, as
+        # praias com muitos nomes oficiais deixam de ganhar a sua própria
+        # procura — que é precisamente o defeito.
+        ordem = json.loads(c.js(r"""(async function(){
+          var praias = await (await fetch('/data/praias.json')).json();
+          function limpa(s){ return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+            .toLowerCase().replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim(); }
+          var conta = {};
+          praias.forEach(function(p){ conta[limpa(p.n)] = (conta[limpa(p.n)]||0) + 1; });
+          /* SÓ AS QUE TÊM MUITOS NOMES OFICIAIS, que são as que o desconto
+             errado penalizava, e só as de nome único, para a resposta certa
+             não ser ambígua. */
+          var alvos = praias.filter(function(p){
+            return p.a && p.a.split(' · ').length >= 2 && conta[limpa(p.n)] === 1; });
+          var caixa = document.getElementById('procura');
+          var lista = document.getElementById('sugestoes');
+          var maus = [];
+          for (var i = 0; i < alvos.length; i++) {
+            caixa.focus(); caixa.value = alvos[i].n;
+            caixa.dispatchEvent(new Event('input', {bubbles:true}));
+            var pri = lista.querySelector('.sugestao[data-i]');
+            var nome = pri ? praias[+pri.dataset.i].n : null;
+            if (nome !== alvos[i].n) maus.push({ escrito: alvos[i].n, veio: nome });
+          }
+          return JSON.stringify({ quantos: alvos.length, maus: maus.slice(0, 6),
+                                  falham: maus.length });
+        })()"""))
+        if not ordem or not ordem['quantos']:
+            semMedida('nenhuma praia tem dois nomes oficiais — o desempate fica por medir')
+        elif ordem['falham']:
+            erro('%d de %d praias com vários nomes oficiais não ganham a procura pelo '
+                 'seu próprio nome: %s'
+                 % (ordem['falham'], ordem['quantos'],
+                    json.dumps(ordem['maus'], ensure_ascii=False)[:300]))
+        else:
+            print('  desempate        ✓ as %d praias com vários nomes oficiais ganham '
+                  'a procura pelo seu próprio nome' % ordem['quantos'])
+
         if not alvo:
             semMedida('nenhuma praia tem nome oficial alternativo — nada a verificar')
         elif not alvo['visivel'] or not alvo['alias']:
@@ -847,10 +926,17 @@ print('\n== 3. praia de rio (sem dados de mar) ==')
 _praias = json.load(open(os.path.join(RAIZ, 'data', 'praias.json'), encoding='utf8'))
 _rio = next((i for i, x in enumerate(_praias)
              if x.get('m') == 0 and len(x['n']) > 14), None)
-if _rio is None:
-    semMedida('não há nenhuma praia de água interior no ficheiro — nada a verificar')
 c=novo(1280,900,False)
 try:
+    # UMA SECÇÃO QUE NÃO TEM O QUE MEDIR SALTA-SE, e não rebenta.
+    # Havia aqui dois caminhos que registavam a falha e SEGUIAM em frente: com
+    # `_rio` a None fazia-se `_praias[None]['n']`, e sem sugestão fazia-se
+    # `.click()` sobre um `querySelector` que se acabara de saber ser nulo. O
+    # `c.js` levanta RuntimeError quando o JavaScript atira — e como isso sobe
+    # até ao topo do ficheiro, uma secção sem o que medir levava consigo todas
+    # as que vinham a seguir. A excepção própria sai daqui limpa.
+    if _rio is None:
+        raise _Saltar('não há nenhuma praia de água interior no ficheiro')
     c.js("""(function(){var i=document.getElementById('procura');
       i.value=%s; i.dispatchEvent(new Event('input',{bubbles:true}));})()"""
       % json.dumps(_praias[_rio]['n']))
@@ -860,7 +946,8 @@ try:
     # dormir. Sem isto o runner dizia que a praia de rio não abria.
     _alvo = c.js("!!document.querySelector('.sugestao[data-i=\"%d\"]')" % _rio)
     if not _alvo:
-        erro('a procura por %r não devolveu a própria praia' % _praias[_rio]['n'])
+        raise _Saltar('a procura por %r não devolveu a própria praia'
+                      % _praias[_rio]['n'])
     c.js("document.querySelector('.sugestao[data-i=\"%d\"]').click()" % _rio)
     _t0 = time.time()
     while time.time() - _t0 < 40:
@@ -890,6 +977,8 @@ try:
     if 'Água do mar' in d['factores']: erro('praia de rio não devia ter factor água')
     if 'rio' not in rodape: erro('rodapé não explica que é praia de rio: '+rodape[:80])
     else: print('  ✓ rodapé explica:', rodape[:70])
+except _Saltar as e:
+    semMedida('secção da praia de rio: %s' % e)
 finally: c.fechar()
 
 print('\n== 4. favoritos ==')
@@ -1933,6 +2022,19 @@ def _mm(mm):
                       Chumbou assim três noites seguidas (2, 3 e 4 de Setembro
                       de 2026) sem haver defeito nenhum no site. */
                    enxertado: !!window.__mmEnxertado,
+                   /* E O DIA ABERTO TEM DE SER O PRIMEIRO.
+                      A bandeira diz que o enxerto agiu, não que agiu no que
+                      está no ecrã: o embrulho actua na PRIMEIRA chamada a
+                      `avaliarDia` e mais nenhuma, e o modelo corre uma vez por
+                      cada um dos seis dias da tira. A primeira é a de hoje,
+                      que é o dia que abre seleccionado — mas se alguém mudar a
+                      ordem, ou o dia que abre, a guarda passava a ler um
+                      cartão e a falar de outro.
+                      (Tentei primeiro exigir «o modelo correu UMA vez». Está
+                      errado e dava «não medido» todos os dias: correm seis,
+                      uma por dia, e sempre correram.) */
+                   diaAberto: [].indexOf.call(document.querySelectorAll('.dia'),
+                     document.querySelector('.dia[aria-selected="true"]')),
                    prob: prob,
                    racio: (prob != null && window.Modelo)
                      ? Modelo._pontos.chuva(prob) / Modelo.PESOS.chuva : null,
@@ -1946,6 +2048,10 @@ if baixo is None or alto is None or baixo.get('vetado') or alto.get('vetado'):
 elif not baixo.get('enxertado') or not alto.get('enxertado'):
     semMedida('os milímetros de chuva não chegaram a ser enxertados '
               '(a parte da manhã veio sem dados) — o limiar fica por medir hoje')
+elif baixo.get('diaAberto') != 0 or alto.get('diaAberto') != 0:
+    semMedida('o dia aberto é o %s/%s e o enxerto só agiu no primeiro — '
+              'o que está no ecrã não é o que foi enxertado'
+              % (baixo.get('diaAberto'), alto.get('diaAberto')))
 else:
     if baixo['marcada'] and (baixo.get('racio') is None or baixo['racio'] < 0.40):
         semMedida('a 0,3 mm a linha da chuva marca-se pelo RÁCIO (%s %% de '

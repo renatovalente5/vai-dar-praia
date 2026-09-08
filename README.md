@@ -43,7 +43,7 @@ browser de quem visita.
   APA](https://apambiente.pt/agua/aguas-balneares) dizem **quais existem**.
   Verificar a lista só contra o OSM era perguntar à cópia se concordava com o
   original de onde saiu — e escondeu durante meses 131 águas balneares
-  oficiais, entre elas a ilha de Santa Maria inteira. 233 praias trazem também
+  oficiais, entre elas a ilha de Santa Maria inteira. 208 praias trazem também
   o nome oficial, que muitas vezes não é o do OSM: quem escreve «Esmoriz»
   encontra a que o OSM chama «Praia Velha».
   A separação entre mar e água interior é medida, não adivinhada: pergunta-se

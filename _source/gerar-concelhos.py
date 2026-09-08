@@ -95,7 +95,7 @@ def main():
                        'aneis': anelos, 'caixa': (min(xs), min(ys), max(xs), max(ys))})
     print('municípios lidos: %d' % len(feitos))
 
-    saida, vizinhos = {}, 0
+    saida, vizinhos, foraDoPais = {}, 0, []
     for pr in praias:
         x, y = pr['lo'], pr['la']
         achado = None
@@ -113,8 +113,38 @@ def main():
                      if f['caixa'][0] - .3 <= x <= f['caixa'][2] + .3
                      and f['caixa'][1] - .3 <= y <= f['caixa'][3] + .3] or feitos
             achado = min(perto, key=lambda f: dist2(x, y, f['aneis']))
+            # MAS «O MAIS PRÓXIMO» TEM DE ESTAR PERTO.
+            # =============================================================
+            # Este ramo existe para a coordenada de uma praia cair sobre a
+            # água, uns metros ao largo do polígono do município. A queda para
+            # o vizinho mais próximo não tem limite nenhum, e por isso aceitava
+            # QUALQUER ponto do planeta e dava-lhe um concelho português.
+            #
+            # Foi o que aconteceu à «Praia do Verde Lago»: a própria APA
+            # publica-a em 37,10183 / −7,29213, que fica a 11,5 km da foz do
+            # Guadiana, ao largo de Isla Canela — em Espanha. Entrou no
+            # ficheiro, este ramo carimbou-lhe «Vila Real de Santo António», e
+            # a seguir o gerar-regioes.js deu-lhe «Algarve». Três programas a
+            # concordar sobre uma praia que não está no país.
+            #
+            # Um areal fica a metros da linha de costa, não a quilómetros.
+            # Cinco quilómetros é largo de propósito — chega para ilhéus e para
+            # pontas mal desenhadas da CAOP — e mesmo assim apanha isto.
+            d = dist2(x, y, achado['aneis']) ** .5 * 111.32
+            if d > 5.0:
+                foraDoPais.append((pr['n'], pr['la'], pr['lo'], d, achado['concelho']))
         saida['%.4f,%.4f' % (pr['la'], pr['lo'])] = {
             'co': achado['concelho'], 'di': achado['zona'], 'dico': achado['dico']}
+
+    if foraDoPais:
+        print('ERRO: %d praia(s) a mais de 5 km de qualquer município português:'
+              % len(foraDoPais))
+        for n, la, lo, d, co in foraDoPais:
+            print('   %-44s %.5f,%.5f — %.1f km fora (o mais perto era %s)'
+                  % (n[:44], la, lo, d, co))
+        print('   Uma coordenada fora do país não é uma praia deste site.')
+        print('   Ver a COORDENADA_ERRADA em _source/actualizar-balneares.js.')
+        return 1
 
     if len(saida) != len(praias):
         print('ERRO: %d praias deram %d chaves — há coordenadas repetidas'

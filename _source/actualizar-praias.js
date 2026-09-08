@@ -39,6 +39,7 @@ const PRAIAS = path.join(RAIZ, 'data', 'praias.json');
 const OSM = path.join(RAIZ, '_source', 'osm-praias.json');
 const CONSULTA = path.join(RAIZ, '_source', 'overpass.txt');
 const BALNEARES = path.join(RAIZ, '_source', 'aguas-balneares.json');
+const DA_APA = path.join(RAIZ, '_source', 'praias-da-apa.json');
 
 /* AS ÁGUAS FECHADAS DA COSTA, uma a uma e com a razão à frente.
    =============================================================
@@ -481,9 +482,31 @@ async function saoDeMar(pontos) {
     /* noSitio.length > 1 ou já usada: é uma segunda representação da mesma
        praia (o OSM tem a mesma praia como way E como relation). Ignora-se. */
   }
+  /* OS CONFLITOS QUE JÁ FORAM VISTOS E DECIDIDOS.
+     Um conflito de nome tem de chumbar o `--verificar`, senão a praia
+     desaparece em silêncio. Mas os dois que estão aqui em baixo já foram
+     olhados, e chumbar por causa deles todas as noites é fabricar o alarme que
+     se deixa de ler. Ficam escritos, com a razão; um conflito NOVO continua a
+     parar tudo, que é o que interessa. */
+  const CONFLITO_CONHECIDO = {
+    /* O OSM tem os Poceirões da Graciosa mapeados duas vezes, com o mesmo
+       nome, a 3,6 km um do outro e por ids seguidos do mesmo autor. Só um fica
+       a 55 m do ponto oficial da APA. Escolher qual das coordenadas está certa
+       é uma edição no OpenStreetMap, e não uma decisão deste programa. */
+    '39.07581,-28.0632': 'Poceirões: dois nós do OSM com o mesmo nome a 3,6 km',
+    /* Uma «Piscina fluvial» sem topónimo nenhum, em Penacova, com o mesmo nome
+       de outra em Águeda. Um nome que não distingue nada não deve entrar. */
+    '40.03061,-8.12281': 'Piscina fluvial: nome sem topónimo, já usado em Águeda',
+  };
+  const novosConflitos = conflitos.filter(
+    (c2) => !CONFLITO_CONHECIDO[c2.la + ',' + c2.lo]);
   if (conflitos.length) {
-    console.log(`  nome ja usado noutro sitio, NAO entraram: ${conflitos.length}`);
-    for (const c2 of conflitos) console.log(`     ${c2.n} (${c2.la},${c2.lo})`);
+    console.log(`  nome ja usado noutro sitio, NAO entraram: ${conflitos.length}`
+      + (novosConflitos.length ? '' : ' (todos conhecidos)'));
+    for (const c2 of conflitos) {
+      const k = CONFLITO_CONHECIDO[c2.la + ',' + c2.lo];
+      console.log(`     ${c2.n} (${c2.la},${c2.lo})${k ? '  — conhecido: ' + k : '  ← NOVO'}`);
+    }
   }
   /* UMA PRAIA QUE A APA DESIGNOU NAO ESTA «SUMIDA» POR FALTAR AO OSM.
      57 das praias deste ficheiro entraram pela lista de aguas balneares
@@ -494,11 +517,22 @@ async function saoDeMar(pontos) {
 
      O OSM diz onde estao as praias; a APA diz quais existem. Faltar a uma
      fonte que nao manda no assunto nao e uma falta. */
+  /* E A EXEMPÇÃO É SÓ PARA AS QUE ENTRARAM POR AQUI.
+     A primeira versão marcava «qualquer praia a menos de 400 m de um ponto da
+     APA», que são 679 das 1239 — mais de metade do ficheiro a ficar fora do
+     relatório de «já não no OSM». Se uma delas fosse mesmo apagada do
+     OpenStreetMap, por engano ou por vandalismo, ninguém dava por isso.
+
+     A lista certa é outra: as praias que o actualizar-balneares.js
+     ACRESCENTOU, porque essas nunca estiveram no OSM e não faz sentido
+     esperá-las lá. Ele grava-as em `_source/praias-da-apa.json` — fora do
+     data/praias.json, que viaja em cada visita e não pode engordar com
+     proveniência. São 58, e não 679. */
   const designadas = new Set();
-  if (fs.existsSync(BALNEARES)) {
-    const aguas = JSON.parse(fs.readFileSync(BALNEARES, 'utf8')).aguas;
+  if (fs.existsSync(DA_APA)) {
+    const pontos = JSON.parse(fs.readFileSync(DA_APA, 'utf8')).pontos || [];
     for (const p of praias) {
-      if (aguas.some((a) => metros([a.la, a.lo], [p.la, p.lo]) < M_OFICIAL)) designadas.add(p);
+      if (pontos.some((q) => metros(q, [p.la, p.lo]) < M_MESMO_SITIO)) designadas.add(p);
     }
   }
   const sumidas = praias.filter((p) => !usadas.has(p) && !designadas.has(p));
@@ -539,10 +573,16 @@ async function saoDeMar(pontos) {
   console.log(`  novas no OSM: ${novas.length}`);
   for (const n of novas) console.log(`     ${n.n} (${n.tipo}) ${n.la},${n.lo}`);
   console.log(`  no site e já não no OSM: ${sumidas.length}`
-    + (designadas.size ? `  (e ${designadas.size} que a APA designou, que o OSM não tem de ter)` : ''));
+    + (designadas.size ? `  (e ${designadas.size} que entraram pela lista da APA e o OSM nunca teve)` : ''));
   for (const s of sumidas) console.log(`     ${s.n} ${s.la},${s.lo}`);
 
-  const nada = !renomeadas.length && !novas.length && !sumidas.length && !fechadas.length;
+  /* OS CONFLITOS CONTAM. Sem isto, uma praia recusada por ter o nome de outra
+     desaparecia em silêncio: o `--verificar` saía 0, o passo do CI escrevia
+     «✅ a lista bate certo com o OpenStreetMap», e a praia nunca entrava em
+     corrida nenhuma. O `nada` é a resposta à pergunta «há alguma coisa por
+     decidir?», e um conflito é precisamente isso. */
+  const nada = !renomeadas.length && !novas.length && !sumidas.length
+    && !fechadas.length && !novosConflitos.length;
 
   if (process.argv.includes('--verificar')) {
     if (nada) { console.log('✓ a lista bate certo com a cópia do OSM'); process.exit(0); }

@@ -539,13 +539,13 @@ a maré do atlas FES2014. O zero dela é o **geóide**, não o nível médio —
 anual em Cascais é −0,369 m — e o **Zero Hidrográfico** das tabelas do Instituto
 Hidrográfico está ~2,6 m abaixo dele (medido em Leixões +2,59, Cascais +2,67,
 Sines +2,57, Lagos +2,65). O IH só publica esse afastamento para uns 16 portos e
-o site tem 995 praias: escrever «1,74 m» no Furadouro seria dar precisão de
+o site tem 1239 praias: escrever «1,74 m» no Furadouro seria dar precisão de
 tabela náutica a um número tirado de uma constante média.
 
 A AMPLITUDE também não, por outra razão: medida em 80 praias do continente, ela
 é **99,6 % explicada pelo DIA e 0,3 % pela PRAIA**. Moledo e Monte Gordo, a
 520 km, dão r = 0,9955 e 0,113 m de diferença média. Seria uma linha a escrever
-o mesmo número nas 995. A HORA não é assim: a mesma preia-mar espalha-se **39
+o mesmo número nas 1239. A HORA não é assim: a mesma preia-mar espalha-se **39
 minutos** de norte a sul (máximo 42), contra os ~50 min/dia a que a maré atrasa.
 
 **+30 minutos**, e não é um acerto a olho. A fonte é a média horária carimbada
@@ -581,7 +581,7 @@ existe para quem vê não entra neste cartão.
 
 **O que a linha NÃO diz, e está escrito no cartão por baixo dela:** não diz se a
 maré tira o areal naquela praia, porque o site não sabe o perfil de nenhuma das
-995; e as horas são do mar aberto, portanto numa ria ou num estuário a maré
+1239; e as horas são do mar aberto, portanto numa ria ou num estuário a maré
 chega mais tarde (o marégrafo de Lagos, num plano restrito, mede metade da
 amplitude com 2h16 de atraso).
 

@@ -347,7 +347,8 @@ console.log('\n== 7. os portões das metades do dia ==');
    da verdade separam-se em silêncio, e quem lê acredita no texto.
 
    A contagem é a do data/praias.json, que é quem manda. */
-const quantas = JSON.parse(fs.readFileSync(path.join(RAIZ, 'data/praias.json'), 'utf8')).length;
+const PRAIAS = JSON.parse(fs.readFileSync(path.join(RAIZ, 'data/praias.json'), 'utf8'));
+const quantas = PRAIAS.length;
 for (const f of ['index.html', '404.html', 'metodologia/index.html']) {
   const t = fs.readFileSync(path.join(RAIZ, f), 'utf8');
   const velhas = [...t.matchAll(/\b(\d{3,4}) praias\b/g)]
@@ -355,6 +356,45 @@ for (const f of ['index.html', '404.html', 'metodologia/index.html']) {
   if (velhas.length) {
     erro(`${f} diz «${velhas[0]} praias» e o ficheiro tem ${quantas}`);
   } else ok(`${f} não tem contagens de praias desactualizadas`);
+}
+
+/* E OS DOCUMENTOS TAMBÉM, que é onde a contagem envelheceu sem ninguém ver.
+   O MODELO.md dizia «995 praias» em três sítios e o README «233 praias trazem
+   o nome oficial» — números de ontem, escritos à mão, num sítio onde ninguém
+   os vai reler. Este defeito já apareceu hoje três vezes; escrever a guarda
+   uma vez custa menos do que voltar a apanhá-lo.
+
+   O LIMIAR É 900, e não «qualquer número». Nestes ficheiros há contagens que
+   são legitimamente menores — 879 de mar, 360 de água interior, 208 com nome
+   oficial, 80 praias da amostra da maré. O que envelhece é o TOTAL, e o total
+   deste site sempre foi de quatro algarismos ou perto disso (995, 996, 1046,
+   1131, 1239). Um número acima de 900 que não seja o total de hoje é um total
+   de ontem. */
+for (const f of ['README.md', 'MODELO.md']) {
+  const t = fs.readFileSync(path.join(RAIZ, f), 'utf8');
+  const velhas = [...t.matchAll(/\b(\d{3,4}) praias\b/g)]
+    .map((m) => +m[1]).filter((x) => x >= 900 && x !== quantas);
+  if (velhas.length) {
+    erro(`${f} diz «${velhas[0]} praias» e o ficheiro tem ${quantas}`);
+  } else ok(`${f} não tem totais de praias desactualizados`);
+}
+
+/* AS TRÊS CONTAGENS QUE O README REPARTE, uma a uma. A regra dos 900 não as
+   apanha — são todas menores —, e são exactamente as que eu escrevi à mão
+   hoje: «879 de mar e 360 de água interior», «208 praias trazem também o nome
+   oficial». Se o ficheiro mudar e elas não, o README passa a mentir com
+   números precisos, que é a pior maneira de mentir. */
+const readme = fs.readFileSync(path.join(RAIZ, 'README.md'), 'utf8');
+for (const [rotulo, quantosSao, padrao] of [
+  ['de mar', PRAIAS.filter((p) => p.m).length, /(\d+) de mar\b/],
+  ['de água interior', PRAIAS.filter((p) => !p.m).length, /(\d+) de água\s+interior\b/],
+  ['com nome oficial', PRAIAS.filter((p) => p.a).length, /(\d+) praias trazem também/],
+]) {
+  const m = readme.match(padrao);
+  if (!m) erro(`o README já não diz quantas praias são «${rotulo}» — a guarda ficou cega`);
+  else if (+m[1] !== quantosSao) {
+    erro(`o README diz ${m[1]} «${rotulo}» e são ${quantosSao}`);
+  } else ok(`README: ${quantosSao} ${rotulo}`);
 }
 
 console.log('\n' + '='.repeat(54));

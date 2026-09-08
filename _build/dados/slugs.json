@@ -113,6 +113,12 @@
   "co": "Santa Cruz",
   "di": "Ilha da Madeira (Madeira)"
  },
+ "32.6617,-17.0373": {
+  "slug": "praia-calhau-da-lapa",
+  "n": "Praia Calhau da Lapa",
+  "co": "Ribeira Brava",
+  "di": "Ilha da Madeira (Madeira)"
+ },
  "32.6715,-17.0674": {
   "slug": "praia-da-ribeira-brava",
   "n": "Praia da Ribeira Brava",
@@ -1245,12 +1251,6 @@
   "slug": "praia-dos-beijinhos-lagoa",
   "n": "Praia dos Beijinhos",
   "co": "Lagoa",
-  "di": "Faro"
- },
- "37.1018,-7.2921": {
-  "slug": "praia-do-verde-lago",
-  "n": "Praia do Verde Lago",
-  "co": "Vila Real de Santo António",
   "di": "Faro"
  },
  "37.1018,-8.3703": {
