@@ -17,6 +17,12 @@
   "co": "Funchal",
   "di": "Ilha da Madeira (Madeira)"
  },
+ "32.6374,-16.9264": {
+  "slug": "praia-cliff-bay",
+  "n": "Praia Cliff Bay",
+  "co": "Funchal",
+  "di": "Ilha da Madeira (Madeira)"
+ },
  "32.6382,-16.8527": {
   "slug": "praia-do-garajau",
   "n": "Praia do Garajau",
@@ -35,6 +41,12 @@
   "co": "Santa Cruz",
   "di": "Ilha da Madeira (Madeira)"
  },
+ "32.6419,-16.8297": {
+  "slug": "praia-roca-mar",
+  "n": "Praia Roca Mar",
+  "co": "Santa Cruz",
+  "di": "Ilha da Madeira (Madeira)"
+ },
  "32.6420,-16.9572": {
   "slug": "praia-nova-funchal",
   "n": "Praia Nova",
@@ -50,6 +62,12 @@
  "32.6428,-16.9592": {
   "slug": "praia-do-arieiro",
   "n": "Praia do Arieiro",
+  "co": "Funchal",
+  "di": "Ilha da Madeira (Madeira)"
+ },
+ "32.6462,-16.8889": {
+  "slug": "praia-do-lazareto",
+  "n": "Praia do Lazareto",
   "co": "Funchal",
   "di": "Ilha da Madeira (Madeira)"
  },
@@ -95,6 +113,12 @@
   "co": "Santa Cruz",
   "di": "Ilha da Madeira (Madeira)"
  },
+ "32.6509,-16.9932": {
+  "slug": "faja-das-bebras",
+  "n": "Fajã das Bebras",
+  "co": "Câmara de Lobos",
+  "di": "Ilha da Madeira (Madeira)"
+ },
  "32.6537,-17.0029": {
   "slug": "faja-dos-asnos",
   "n": "Fajã dos Asnos",
@@ -131,6 +155,12 @@
   "co": "Santa Cruz",
   "di": "Ilha da Madeira (Madeira)"
  },
+ "32.6773,-17.0795": {
+  "slug": "praia-da-tabua",
+  "n": "Praia da Tabua",
+  "co": "Ribeira Brava",
+  "di": "Ilha da Madeira (Madeira)"
+ },
  "32.6793,-17.0868": {
   "slug": "praia-lugar-de-baixo",
   "n": "Praia Lugar de Baixo",
@@ -153,6 +183,12 @@
   "slug": "praia-da-madalena-do-mar",
   "n": "Praia da Madalena do Mar",
   "co": "Ponta do Sol",
+  "di": "Ilha da Madeira (Madeira)"
+ },
+ "32.7062,-16.7628": {
+  "slug": "clube-nautico-de-machico",
+  "n": "Clube Náutico de Machico",
+  "co": "Machico",
   "di": "Ilha da Madeira (Madeira)"
  },
  "32.7067,-17.1473": {
@@ -311,10 +347,34 @@
   "co": "Santana",
   "di": "Ilha da Madeira (Madeira)"
  },
+ "32.8298,-16.9517": {
+  "slug": "praia-da-quebrada-santana",
+  "n": "Praia da Quebrada",
+  "co": "Santana",
+  "di": "Ilha da Madeira (Madeira)"
+ },
  "32.8314,-16.8984": {
   "slug": "praia-de-s-jorge",
   "n": "Praia de S. Jorge",
   "co": "Santana",
+  "di": "Ilha da Madeira (Madeira)"
+ },
+ "32.8334,-16.9241": {
+  "slug": "praia-da-rocha-de-fora",
+  "n": "Praia da Rocha de Fora",
+  "co": "Santana",
+  "di": "Ilha da Madeira (Madeira)"
+ },
+ "32.8556,-17.1533": {
+  "slug": "foz-da-ribeira-da-janela",
+  "n": "Foz da Ribeira da Janela",
+  "co": "Porto Moniz",
+  "di": "Ilha da Madeira (Madeira)"
+ },
+ "32.8565,-17.2132": {
+  "slug": "praia-das-achadas-da-cruz",
+  "n": "Praia das Achadas da Cruz",
+  "co": "Porto Moniz",
   "di": "Ilha da Madeira (Madeira)"
  },
  "32.8684,-17.1707": {
@@ -368,6 +428,12 @@
  "33.0588,-16.3288": {
   "slug": "fontinha",
   "n": "Fontinha",
+  "co": "Porto Santo",
+  "di": "Ilha de Porto Santo (Madeira)"
+ },
+ "33.0622,-16.3183": {
+  "slug": "porto-santo-penedo",
+  "n": "Porto Santo - Penedo",
   "co": "Porto Santo",
   "di": "Ilha de Porto Santo (Madeira)"
  },
@@ -488,6 +554,12 @@
  "37.0065,-7.9415": {
   "slug": "praia-dos-tesos-faro",
   "n": "Praia dos Tesos",
+  "co": "Faro",
+  "di": "Faro"
+ },
+ "37.0079,-7.9956": {
+  "slug": "praia-faro-mar-poente",
+  "n": "Praia Faro - Mar Poente",
   "co": "Faro",
   "di": "Faro"
  },
@@ -881,6 +953,12 @@
   "co": "Albufeira",
   "di": "Faro"
  },
+ "37.0804,-8.1494": {
+  "slug": "praia-poco-velho",
+  "n": "Praia Poço Velho",
+  "co": "Albufeira",
+  "di": "Faro"
+ },
  "37.0818,-8.2622": {
   "slug": "praia-da-baleeira-albufeira",
   "n": "Praia da Baleeira",
@@ -1175,6 +1253,12 @@
   "co": "Lagos",
   "di": "Faro"
  },
+ "37.0969,-8.3478": {
+  "slug": "praia-grande-poente",
+  "n": "Praia Grande - Poente",
+  "co": "Silves",
+  "di": "Faro"
+ },
  "37.0969,-8.4756": {
   "slug": "praia-do-paraiso-lagoa",
   "n": "Praia do Paraíso",
@@ -1311,6 +1395,12 @@
   "slug": "praia-do-molhe-lagoa",
   "n": "Praia do Molhe",
   "co": "Lagoa",
+  "di": "Faro"
+ },
+ "37.1150,-8.5281": {
+  "slug": "praia-marina-de-portimao",
+  "n": "Praia Marina de Portimão",
+  "co": "Portimão",
   "di": "Faro"
  },
  "37.1151,-7.6234": {
@@ -1883,6 +1973,12 @@
   "co": "Mértola",
   "di": "Beja"
  },
+ "37.7058,-25.4434": {
+  "slug": "praia-ilheu-de-vila-franca-do-campo",
+  "n": "Praia Ilhéu de Vila Franca do Campo",
+  "co": "Vila Franca do Campo",
+  "di": "Ilha de São Miguel (Açores)"
+ },
  "37.7133,-25.4957": {
   "slug": "zona-balnear-da-caloura",
   "n": "Zona Balnear da Caloura",
@@ -1994,6 +2090,12 @@
  "37.7417,-25.5741": {
   "slug": "piscinas-naturais-da-lagoa",
   "n": "Piscinas Naturais da Lagoa",
+  "co": "Lagoa",
+  "di": "Ilha de São Miguel (Açores)"
+ },
+ "37.7445,-25.5942": {
+  "slug": "pocas-da-atalhada",
+  "n": "Poças da Atalhada",
   "co": "Lagoa",
   "di": "Ilha de São Miguel (Açores)"
  },
@@ -2339,6 +2441,12 @@
   "co": "Sines",
   "di": "Setúbal"
  },
+ "37.8984,-25.8226": {
+  "slug": "praia-pocas-sul-dos-mosteiros",
+  "n": "Praia Poças Sul dos Mosteiros",
+  "co": "Ponta Delgada",
+  "di": "Ilha de São Miguel (Açores)"
+ },
  "37.9071,-8.7994": {
   "slug": "praia-de-morgavel",
   "n": "Praia de Morgavel",
@@ -2525,9 +2633,21 @@
   "co": "Lajes do Pico",
   "di": "Ilha do Pico (Açores)"
  },
+ "38.3983,-28.2536": {
+  "slug": "clube-naval-das-lajes",
+  "n": "Clube Naval das Lajes",
+  "co": "Lajes do Pico",
+  "di": "Ilha do Pico (Açores)"
+ },
  "38.4000,-28.0827": {
   "slug": "poca-das-mujas",
   "n": "Poça das Mujas",
+  "co": "Lajes do Pico",
+  "di": "Ilha do Pico (Açores)"
+ },
+ "38.4029,-28.0686": {
+  "slug": "portinho-da-feteira",
+  "n": "Portinho da Feteira",
   "co": "Lajes do Pico",
   "di": "Ilha do Pico (Açores)"
  },
@@ -2552,6 +2672,12 @@
  "38.4124,-28.2890": {
   "slug": "zona-balnear-da-fonte",
   "n": "Zona Balnear da Fonte",
+  "co": "Lajes do Pico",
+  "di": "Ilha do Pico (Açores)"
+ },
+ "38.4136,-28.3400": {
+  "slug": "praia-verdoso",
+  "n": "Praia Verdoso",
   "co": "Lajes do Pico",
   "di": "Ilha do Pico (Açores)"
  },
@@ -2693,6 +2819,12 @@
   "co": "Sesimbra",
   "di": "Setúbal"
  },
+ "38.4562,-28.1668": {
+  "slug": "porto-de-santo-amaro",
+  "n": "Porto de Santo Amaro",
+  "co": "São Roque do Pico",
+  "di": "Ilha do Pico (Açores)"
+ },
  "38.4565,-28.1518": {
   "slug": "porto-do-caisinho",
   "n": "Porto do Caisinho",
@@ -2734,6 +2866,12 @@
   "n": "Praia do Penedo",
   "co": "Sesimbra",
   "di": "Setúbal"
+ },
+ "38.4722,-28.1996": {
+  "slug": "porto-da-prainha",
+  "n": "Porto da Prainha",
+  "co": "São Roque do Pico",
+  "di": "Ilha do Pico (Açores)"
  },
  "38.4728,-8.9842": {
   "slug": "praia-dos-pilotos",
@@ -2826,7 +2964,7 @@
   "di": "Setúbal"
  },
  "38.4896,-28.2353": {
-  "slug": "baia-das-canas",
+  "slug": "baia-das-canas-sao-roque-do-pico",
   "n": "Baía das Canas",
   "co": "São Roque do Pico",
   "di": "Ilha do Pico (Açores)"
@@ -2957,6 +3095,12 @@
   "co": "Horta",
   "di": "Ilha do Faial (Açores)"
  },
+ "38.5272,-28.5373": {
+  "slug": "areia-larga",
+  "n": "Areia Larga",
+  "co": "Madalena",
+  "di": "Ilha do Pico (Açores)"
+ },
  "38.5340,-28.5345": {
   "slug": "praia-madalena",
   "n": "Praia Madalena",
@@ -2974,6 +3118,12 @@
   "n": "Zona Balnear do Guindastre",
   "co": "São Roque do Pico",
   "di": "Ilha do Pico (Açores)"
+ },
+ "38.5422,-27.7602": {
+  "slug": "porto-do-topo",
+  "n": "Porto do Topo",
+  "co": "Calheta de S. Jorge",
+  "di": "Ilha de São Jorge (Açores)"
  },
  "38.5428,-28.6194": {
   "slug": "praia-da-conceicao-horta",
@@ -2993,6 +3143,18 @@
   "co": "Alandroal",
   "di": "Évora"
  },
+ "38.5478,-27.7535": {
+  "slug": "piscina-natural-da-pontinha",
+  "n": "Piscina Natural da Pontinha",
+  "co": "Calheta de S. Jorge",
+  "di": "Ilha de São Jorge (Açores)"
+ },
+ "38.5506,-27.8658": {
+  "slug": "porto-da-faja-de-sao-joao",
+  "n": "Porto da Fajã de São João",
+  "co": "Calheta de S. Jorge",
+  "di": "Ilha de São Jorge (Açores)"
+ },
  "38.5518,-28.5044": {
   "slug": "porto-da-formosinha",
   "n": "Porto da Formosinha",
@@ -3004,6 +3166,12 @@
   "n": "Praia do Almoxarife",
   "co": "Horta",
   "di": "Ilha do Faial (Açores)"
+ },
+ "38.5555,-28.4473": {
+  "slug": "cachorro",
+  "n": "Cachorro",
+  "co": "Madalena",
+  "di": "Ilha do Pico (Açores)"
  },
  "38.5576,-28.4298": {
   "slug": "poca-da-barca",
@@ -3077,6 +3245,12 @@
   "co": "Almada",
   "di": "Setúbal"
  },
+ "38.5822,-27.9306": {
+  "slug": "porto-da-faja-dos-vimes",
+  "n": "Porto da Fajã dos Vimes",
+  "co": "Calheta de S. Jorge",
+  "di": "Ilha de São Jorge (Açores)"
+ },
  "38.5823,-9.2022": {
   "slug": "praia-azul-almada",
   "n": "Praia Azul",
@@ -3124,6 +3298,12 @@
   "n": "Praia do Infante",
   "co": "Almada",
   "di": "Setúbal"
+ },
+ "38.6009,-28.0109": {
+  "slug": "cais-da-calheta",
+  "n": "Cais da Calheta",
+  "co": "Calheta de S. Jorge",
+  "di": "Ilha de São Jorge (Açores)"
  },
  "38.6014,-9.2100": {
   "slug": "praia-da-sereia",
@@ -3209,11 +3389,23 @@
   "co": "Almada",
   "di": "Setúbal"
  },
+ "38.6281,-28.0791": {
+  "slug": "porto-da-faja-das-almas",
+  "n": "Porto da Fajã das Almas",
+  "co": "Velas",
+  "di": "Ilha de São Jorge (Açores)"
+ },
  "38.6302,-9.2284": {
   "slug": "praia-da-saude-almada",
   "n": "Praia da Saúde",
   "co": "Almada",
   "di": "Setúbal"
+ },
+ "38.6316,-28.0985": {
+  "slug": "portinho-das-manadas",
+  "n": "Portinho das Manadas",
+  "co": "Velas",
+  "di": "Ilha de São Jorge (Açores)"
  },
  "38.6340,-9.2318": {
   "slug": "nova-praia",
@@ -3226,6 +3418,12 @@
   "n": "Zona de Banhos do Porto da Eira",
   "co": "Horta",
   "di": "Ilha do Faial (Açores)"
+ },
+ "38.6370,-28.1126": {
+  "slug": "portinho-dos-terreiros",
+  "n": "Portinho dos Terreiros",
+  "co": "Velas",
+  "di": "Ilha de São Jorge (Açores)"
  },
  "38.6376,-9.2355": {
   "slug": "praia-nova-almada",
@@ -3262,6 +3460,12 @@
   "n": "Praia do Seixal",
   "co": "Seixal",
   "di": "Setúbal"
+ },
+ "38.6441,-28.1291": {
+  "slug": "piscinas-municipais-da-urzelina",
+  "n": "Piscinas Municipais da Urzelina",
+  "co": "Velas",
+  "di": "Ilha de São Jorge (Açores)"
  },
  "38.6448,-9.2420": {
   "slug": "praia-do-cds",
@@ -3335,6 +3539,12 @@
   "co": "Barreiro",
   "di": "Setúbal"
  },
+ "38.6563,-28.1614": {
+  "slug": "zona-balnear-da-ribeira-do-nabo",
+  "n": "Zona Balnear da Ribeira do Nabo",
+  "co": "Velas",
+  "di": "Ilha de São Jorge (Açores)"
+ },
  "38.6563,-9.0905": {
   "slug": "praia-do-mexilhoeiro",
   "n": "Praia do Mexilhoeiro",
@@ -3352,6 +3562,12 @@
   "n": "Silveira",
   "co": "Angra do Heroísmo",
   "di": "Ilha Terceira (Açores)"
+ },
+ "38.6568,-27.9931": {
+  "slug": "porto-da-faja-das-pontas",
+  "n": "Porto da Fajã das Pontas",
+  "co": "Calheta de S. Jorge",
+  "di": "Ilha de São Jorge (Açores)"
  },
  "38.6589,-9.0920": {
   "slug": "praia-do-clube-naval",
@@ -3377,6 +3593,12 @@
   "co": "Almada",
   "di": "Setúbal"
  },
+ "38.6667,-28.1885": {
+  "slug": "portinho-da-queimada",
+  "n": "Portinho da Queimada",
+  "co": "Velas",
+  "di": "Ilha de São Jorge (Açores)"
+ },
  "38.6674,-9.0280": {
   "slug": "praia-da-gorda",
   "n": "Praia da Gorda",
@@ -3400,6 +3622,12 @@
   "n": "Praia da Mutela",
   "co": "Almada",
   "di": "Setúbal"
+ },
+ "38.6732,-28.1951": {
+  "slug": "portinho-do-carregadouro",
+  "n": "Portinho do Carregadouro",
+  "co": "Velas",
+  "di": "Ilha de São Jorge (Açores)"
  },
  "38.6738,-9.2331": {
   "slug": "praia-da-trafaria",
@@ -3431,6 +3659,12 @@
   "co": "Cascais",
   "di": "Lisboa"
  },
+ "38.6765,-27.0645": {
+  "slug": "porto-e-piscina-natural-de-sao-fernando",
+  "n": "Porto e Piscina Natural de São Fernando",
+  "co": "Praia da Vitória",
+  "di": "Ilha Terceira (Açores)"
+ },
  "38.6773,-9.2073": {
   "slug": "prainha-do-porto-brandao",
   "n": "Prainha do Porto Brandão",
@@ -3440,6 +3674,12 @@
  "38.6781,-28.2081": {
   "slug": "poca-dos-frades",
   "n": "Poça dos Frades",
+  "co": "Velas",
+  "di": "Ilha de São Jorge (Açores)"
+ },
+ "38.6790,-28.0534": {
+  "slug": "poca-simao-dias",
+  "n": "Poça Simão Dias",
   "co": "Velas",
   "di": "Ilha de São Jorge (Açores)"
  },
@@ -3472,6 +3712,12 @@
   "n": "Praia da Parede",
   "co": "Cascais",
   "di": "Lisboa"
+ },
+ "38.6865,-27.0560": {
+  "slug": "baia-das-canas-praia-da-vitoria",
+  "n": "Baía das Canas",
+  "co": "Praia da Vitória",
+  "di": "Ilha Terceira (Açores)"
  },
  "38.6871,-9.3015": {
   "slug": "praia-das-fontainhas-oeiras",
@@ -3713,6 +3959,12 @@
   "co": "Sintra",
   "di": "Lisboa"
  },
+ "38.7998,-27.2460": {
+  "slug": "praia-calheta-dos-lagadores",
+  "n": "Praia Calheta dos Lagadores",
+  "co": "Praia da Vitória",
+  "di": "Ilha Terceira (Açores)"
+ },
  "38.8017,-9.4866": {
   "slug": "praia-do-cavalo-sintra",
   "n": "Praia do Cavalo",
@@ -3746,6 +3998,12 @@
  "38.8249,-9.4699": {
   "slug": "praia-das-macas",
   "n": "Praia das Maçãs",
+  "co": "Sintra",
+  "di": "Lisboa"
+ },
+ "38.8404,-9.4633": {
+  "slug": "praia-azenhas-do-mar",
+  "n": "Praia Azenhas do Mar",
   "co": "Sintra",
   "di": "Lisboa"
  },
@@ -3929,11 +4187,23 @@
   "co": "Avis",
   "di": "Portalegre"
  },
+ "39.0763,-28.0633": {
+  "slug": "poceiroes-piscinas-naturais",
+  "n": "Poceirões - Piscinas naturais",
+  "co": "Santa Cruz da Graciosa",
+  "di": "Ilha da Graciosa (Açores)"
+ },
  "39.0815,-8.7581": {
   "slug": "praia-fluvial-da-valada",
   "n": "Praia Fluvial da Valada",
   "co": "Cartaxo",
   "di": "Santarém"
+ },
+ "39.0858,-27.9949": {
+  "slug": "poca-das-salemas",
+  "n": "Poça das Salemas",
+  "co": "Santa Cruz da Graciosa",
+  "di": "Ilha da Graciosa (Açores)"
  },
  "39.0877,-28.0086": {
   "slug": "zona-balnear-santa-cruz-calheta",
@@ -3947,12 +4217,6 @@
   "co": "Ponte de Sor",
   "di": "Portalegre"
  },
- "39.0963,-28.0294": {
-  "slug": "poceiroes-piscinas-naturais",
-  "n": "Poceirões - Piscinas naturais",
-  "co": "Santa Cruz da Graciosa",
-  "di": "Ilha da Graciosa (Açores)"
- },
  "39.0975,-8.1451": {
   "slug": "praia-fluvial-do-pintadinho",
   "n": "Praia Fluvial do Pintadinho",
@@ -3962,6 +4226,12 @@
  "39.1095,-9.3975": {
   "slug": "praia-da-foz-do-sizandro",
   "n": "Praia da Foz do Sizandro",
+  "co": "Torres Vedras",
+  "di": "Lisboa"
+ },
+ "39.1144,-9.3938": {
+  "slug": "praia-azul-torres-vedras",
+  "n": "Praia Azul (Torres Vedras)",
   "co": "Torres Vedras",
   "di": "Lisboa"
  },
@@ -4133,6 +4403,18 @@
   "co": "Peniche",
   "di": "Leiria"
  },
+ "39.3454,-9.3644": {
+  "slug": "praia-medao-supertubos",
+  "n": "Praia Medão - Supertubos",
+  "co": "Peniche",
+  "di": "Leiria"
+ },
+ "39.3500,-9.3680": {
+  "slug": "praia-molhe-leste",
+  "n": "Praia Molhe Leste",
+  "co": "Peniche",
+  "di": "Leiria"
+ },
  "39.3539,-9.3881": {
   "slug": "praia-do-porto-de-areia-sul",
   "n": "Praia do Porto de Areia Sul",
@@ -4150,6 +4432,18 @@
   "n": "Praia Fluvial Porto das Mulheres",
   "co": "Chamusca",
   "di": "Santarém"
+ },
+ "39.3623,-9.3683": {
+  "slug": "praia-peniche-de-cima",
+  "n": "Praia Peniche de Cima",
+  "co": "Peniche",
+  "di": "Leiria"
+ },
+ "39.3646,-9.3725": {
+  "slug": "praia-gamboa",
+  "n": "Praia Gambôa",
+  "co": "Peniche",
+  "di": "Leiria"
  },
  "39.3655,-9.3559": {
   "slug": "praia-do-baleal",
@@ -4209,6 +4503,12 @@
   "slug": "praia-do-pico-da-mota",
   "n": "Praia do Pico da Mota",
   "co": "Peniche",
+  "di": "Leiria"
+ },
+ "39.4004,-9.2776": {
+  "slug": "praia-vale-de-janelas",
+  "n": "Praia Vale de Janelas",
+  "co": "Óbidos",
   "di": "Leiria"
  },
  "39.4064,-9.2672": {
@@ -4319,6 +4619,12 @@
   "co": "Alcanena",
   "di": "Santarém"
  },
+ "39.4529,-31.2663": {
+  "slug": "piscinas-naturais-da-faja-grande",
+  "n": "Piscinas Naturais da Fajã Grande",
+  "co": "Lajes das Flores",
+  "di": "Ilha das Flores (Açores)"
+ },
  "39.4535,-8.1893": {
   "slug": "praia-fluvial-de-abrantes",
   "n": "Praia Fluvial de Abrantes",
@@ -4388,6 +4694,12 @@
  "39.5073,-9.1421": {
   "slug": "praia-de-sao-martinho-do-porto",
   "n": "Praia de São Martinho do Porto",
+  "co": "Alcobaça",
+  "di": "Leiria"
+ },
+ "39.5101,-9.1355": {
+  "slug": "praia-sao-martinho-do-porto-norte",
+  "n": "Praia São Martinho do Porto Norte",
   "co": "Alcobaça",
   "di": "Leiria"
  },
@@ -4522,6 +4834,12 @@
   "n": "Praia fluvial da Bairrada",
   "co": "Ferreira do Zêzere",
   "di": "Santarém"
+ },
+ "39.6536,-9.0698": {
+  "slug": "praia-legua",
+  "n": "Praia Légua",
+  "co": "Alcobaça",
+  "di": "Leiria"
  },
  "39.6542,-8.4106": {
   "slug": "praia-fluvial-do-sobreirinho",
@@ -5033,6 +5351,12 @@
   "co": "Pampilhosa da Serra",
   "di": "Coimbra"
  },
+ "40.1508,-8.8734": {
+  "slug": "praia-relogio",
+  "n": "Praia Relógio",
+  "co": "Figueira da Foz",
+  "di": "Coimbra"
+ },
  "40.1512,-7.6852": {
   "slug": "praia-fluvial-do-ourondo",
   "n": "Praia Fluvial do Ourondo",
@@ -5085,6 +5409,12 @@
   "slug": "praia-fluvial-poco-da-cesta",
   "n": "Praia Fluvial Poço da Cesta",
   "co": "Pampilhosa da Serra",
+  "di": "Coimbra"
+ },
+ "40.1634,-8.8789": {
+  "slug": "praia-buarcos",
+  "n": "Praia Buarcos",
+  "co": "Figueira da Foz",
   "di": "Coimbra"
  },
  "40.1674,-8.8868": {
@@ -5198,6 +5528,12 @@
  "40.2295,-7.8262": {
   "slug": "praia-fluvial-de-piodao",
   "n": "Praia Fluvial de Piódão",
+  "co": "Arganil",
+  "di": "Coimbra"
+ },
+ "40.2366,-8.0513": {
+  "slug": "praia-fluvial-peneda-talhada",
+  "n": "Praia Fluvial Peneda Talhada",
   "co": "Arganil",
   "di": "Coimbra"
  },
@@ -5361,6 +5697,12 @@
   "slug": "praia-fluvial-de-avo",
   "n": "Praia fluvial de Avô",
   "co": "Oliveira do Hospital",
+  "di": "Coimbra"
+ },
+ "40.2950,-7.9590": {
+  "slug": "praia-fluvial-urtigal",
+  "n": "Praia Fluvial Urtigal",
+  "co": "Arganil",
   "di": "Coimbra"
  },
  "40.3010,-7.8364": {
@@ -5702,6 +6044,12 @@
  "40.6405,-8.7277": {
   "slug": "praia-jardim-de-oudinot",
   "n": "Praia Jardim de Oudinot",
+  "co": "Ílhavo",
+  "di": "Aveiro"
+ },
+ "40.6427,-8.7486": {
+  "slug": "praia-meia-laranja",
+  "n": "Praia Meia Laranja",
   "co": "Ílhavo",
   "di": "Aveiro"
  },
@@ -6137,6 +6485,12 @@
   "co": "Gondomar",
   "di": "Porto"
  },
+ "41.0583,-8.6569": {
+  "slug": "praia-mar-e-sol-vila-nova-de-gaia",
+  "n": "Praia Mar e Sol (Vila Nova de Gaia)",
+  "co": "Vila Nova de Gaia",
+  "di": "Porto"
+ },
  "41.0636,-8.0084": {
   "slug": "praia-fluvial-da-lagarica",
   "n": "Praia Fluvial da Lagariça",
@@ -6522,7 +6876,7 @@
   "di": "Vila Real"
  },
  "41.2374,-8.7244": {
-  "slug": "praia-da-quebrada",
+  "slug": "praia-da-quebrada-matosinhos",
   "n": "Praia da Quebrada",
   "co": "Matosinhos",
   "di": "Porto"
@@ -6537,6 +6891,12 @@
   "slug": "praia-fluvial-de-real",
   "n": "Praia Fluvial de Real",
   "co": "Amarante",
+  "di": "Porto"
+ },
+ "41.2489,-8.7258": {
+  "slug": "praia-pedras-do-corgo",
+  "n": "Praia Pedras do Corgo",
+  "co": "Matosinhos",
   "di": "Porto"
  },
  "41.2492,-7.8116": {
@@ -6611,6 +6971,30 @@
   "co": "Vila do Conde",
   "di": "Porto"
  },
+ "41.2951,-8.7362": {
+  "slug": "praia-congreira",
+  "n": "Praia Congreira",
+  "co": "Vila do Conde",
+  "di": "Porto"
+ },
+ "41.2981,-8.7373": {
+  "slug": "praia-terra-nova",
+  "n": "Praia Terra Nova",
+  "co": "Vila do Conde",
+  "di": "Porto"
+ },
+ "41.3008,-8.7376": {
+  "slug": "praia-laderca",
+  "n": "Praia Laderça",
+  "co": "Vila do Conde",
+  "di": "Porto"
+ },
+ "41.3035,-8.7381": {
+  "slug": "praia-pinhal-dos-eletricos",
+  "n": "Praia Pinhal dos Elétricos",
+  "co": "Vila do Conde",
+  "di": "Porto"
+ },
  "41.3102,-8.7406": {
   "slug": "praia-de-mindelo",
   "n": "Praia de Mindelo",
@@ -6641,6 +7025,18 @@
   "co": "Vila do Conde",
   "di": "Porto"
  },
+ "41.3484,-8.7541": {
+  "slug": "praia-azul-vila-do-conde",
+  "n": "Praia Azul (Vila do Conde)",
+  "co": "Vila do Conde",
+  "di": "Porto"
+ },
+ "41.3505,-8.7542": {
+  "slug": "praia-turismo",
+  "n": "Praia Turismo",
+  "co": "Vila do Conde",
+  "di": "Porto"
+ },
  "41.3565,-8.7554": {
   "slug": "praia-das-caxinas",
   "n": "Praia das Caxinas",
@@ -6652,6 +7048,18 @@
   "n": "Praia Fluvial de Martim",
   "co": "Murça",
   "di": "Vila Real"
+ },
+ "41.3614,-8.7596": {
+  "slug": "praia-mar-e-sol-vila-do-conde",
+  "n": "Praia Mar e Sol (Vila do Conde)",
+  "co": "Vila do Conde",
+  "di": "Porto"
+ },
+ "41.3617,-8.7603": {
+  "slug": "praia-barcos",
+  "n": "Praia Barcos",
+  "co": "Vila do Conde",
+  "di": "Porto"
  },
  "41.3747,-8.7626": {
   "slug": "praia-do-peixe",
@@ -6764,6 +7172,12 @@
  "41.3976,-8.7789": {
   "slug": "praia-de-fragosa",
   "n": "Praia de Fragosa",
+  "co": "Póvoa de Varzim",
+  "di": "Porto"
+ },
+ "41.4087,-8.7828": {
+  "slug": "praia-quiao",
+  "n": "Praia Quião",
   "co": "Póvoa de Varzim",
   "di": "Porto"
  },
@@ -7280,6 +7694,12 @@
  "41.8535,-6.9319": {
   "slug": "praia-fluvial-ponte-soeira",
   "n": "Praia Fluvial Ponte Soeira",
+  "co": "Vinhais",
+  "di": "Bragança"
+ },
+ "41.8588,-7.1215": {
+  "slug": "praia-fluvial-ponte-frades",
+  "n": "Praia Fluvial Ponte Frades",
   "co": "Vinhais",
   "di": "Bragança"
  },

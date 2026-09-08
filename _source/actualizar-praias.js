@@ -489,11 +489,17 @@ async function saoDeMar(pontos) {
      se deixa de ler. Ficam escritos, com a razão; um conflito NOVO continua a
      parar tudo, que é o que interessa. */
   const CONFLITO_CONHECIDO = {
-    /* O OSM tem os Poceirões da Graciosa mapeados duas vezes, com o mesmo
-       nome, a 3,6 km um do outro e por ids seguidos do mesmo autor. Só um fica
-       a 55 m do ponto oficial da APA. Escolher qual das coordenadas está certa
-       é uma edição no OpenStreetMap, e não uma decisão deste programa. */
-    '39.07581,-28.0632': 'Poceirões: dois nós do OSM com o mesmo nome a 3,6 km',
+    /* O OSM tem os Poceirões da Graciosa mapeados duas vezes, com o mesmo nome,
+       a 3,7 km um do outro e por ids seguidos do mesmo autor (6710754585 e
+       6710754685). A dúvida acabou a 8/9/2026: TRÊS fontes independentes põem
+       os Poceirões no mesmo sítio — a APA (PTAN9W, 39,07631/−28,06332), o
+       Portal do Turismo dos Açores (a 57 m) e o nó 6710754685 (a 57 m). O nó
+       6710754585, a 3,7 km, é o discrepante, e era dele que a coordenada do
+       site vinha. O cartão foi movido para o ponto oficial.
+       O nó errado continua no OSM e continua a bater à porta com o mesmo nome;
+       fica aqui reconhecido para não parar o CI todas as noites. Corrigi-lo é
+       uma edição no OpenStreetMap, e não uma decisão deste programa. */
+    '39.09629,-28.02944': 'Poceirões: o nó do OSM que está 3,7 km fora do sítio',
     /* Uma «Piscina fluvial» sem topónimo nenhum, em Penacova, com o mesmo nome
        de outra em Águeda. Um nome que não distingue nada não deve entrar. */
     '40.03061,-8.12281': 'Piscina fluvial: nome sem topónimo, já usado em Águeda',

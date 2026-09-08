@@ -74,7 +74,18 @@ const DA_APA = path.join(RAIZ, '_source', 'praias-da-apa.json');
 const FONTE = 'https://sniambgeoogc.apambiente.pt/getogc/rest/services/SNIAmb/Praias'
   + '/MapServer/0/query?where=1%3D1&outFields=*&outSR=4326&f=geojson&resultRecordCount=2000';
 
-const KM_MESMA = 1.5;      /* a menos disto é a mesma areia — ver o cabeçalho */
+/* A MENOS DISTO É A MESMA AREIA — e o número é medido, não escolhido.
+   Esteve em 1,5 km e era generoso de mais. A medida que o decide é esta: nas
+   605 águas balneares que casam com um cartão PELO NOME — isto é, onde não há
+   dúvida de que são o mesmo sítio —, a distância entre o ponto da APA e o
+   ponto do site tem mediana de 96 m e percentil 90 de 572 m. Ou seja: quando é
+   mesmo a mesma areia, os dois pontos ficam a menos de 600 m.
+   Acima disso é outro sítio, e ficava sem cartão — a aparecer só como um nome
+   alternativo de um vizinho. Eram 39, das quais 22 com bandeira azul:
+   os Supertubos em Peniche, as Azenhas do Mar, Buarcos, o Ilhéu de Vila Franca
+   do Campo, as Poças Sul dos Mosteiros. Quem escrevia «supertubos» era levado
+   à Praia da Consolação, a 830 m, com uma etiqueta a dizer que era ali. */
+const KM_MESMA = 0.6;
 const KM_NOME = 4.0;       /* o mesmo nome a menos disto é a mesma praia */
 const M_NOME_OSM = 800;    /* raio para ir buscar ao OSM o nome por extenso */
 const M_MESMO_PONTO = 60;  /* a menos disto é o mesmo ponto, e é um cartão só */
